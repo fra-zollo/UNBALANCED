@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNBALANCED | Rubrica per una giustizia sociale</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Importiamo Chart.js per il grafico statico -->
+    <!-- Chart.js per il grafico dell'Issue 1 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- D3.js per la Mappa Geografica dell'Issue 2 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
         :root {
@@ -45,6 +50,29 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(0,0,0,0.05);
         }
+
+        /* Stili mappa D3 */
+        .map-region {
+            fill: #e5e5ea;
+            stroke: #ffffff;
+            stroke-width: 1.5px;
+            transition: fill 0.3s;
+        }
+        .map-region:hover {
+            fill: #d1d1d6;
+        }
+        .map-point {
+            fill: #1d1d1f;
+            opacity: 0.7;
+            stroke: #ffffff;
+            stroke-width: 0.5px;
+            transition: r 0.2s, opacity 0.2s;
+        }
+        .map-point:hover {
+            r: 8;
+            opacity: 1;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="w-full min-h-screen relative overflow-x-hidden">
@@ -69,10 +97,10 @@
 
         <!-- Griglia degli Issues -->
         <main class="flex-grow">
-            <div id="issues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
-                <!-- ISSUE 1: Italia per pochi (Custom Canvas) -->
-                <div onclick="openArticle()" class="border border-gray-400 p-6 md:p-8 bg-white cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group flex flex-col min-h-[500px] rounded-2xl">
+                <!-- ISSUE 1: Italia per pochi -->
+                <div onclick="openArticle(1)" class="border border-gray-400 p-6 md:p-8 bg-white cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group flex flex-col min-h-[500px] rounded-2xl">
                     <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 1</span>
                     <h3 class="text-2xl font-bold mb-6 group-hover:text-[#86868b] transition-colors">Italia per pochi.</h3>
                     
@@ -90,9 +118,28 @@
                     </p>
                 </div>
 
+                <!-- ISSUE 2: Integrazione, davvero? -->
+                <div onclick="openArticle(2)" class="border border-gray-400 p-6 md:p-8 bg-white cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group flex flex-col min-h-[500px] rounded-2xl">
+                    <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 2</span>
+                    <h3 class="text-2xl font-bold mb-6 group-hover:text-[#86868b] transition-colors">Integrazione, davvero?</h3>
+                    
+                    <!-- Placeholder Map Preview -->
+                    <div class="h-52 border border-gray-200 bg-[#fbfbfd] mb-8 flex items-center justify-center relative overflow-hidden rounded-xl">
+                        <div class="absolute inset-0 flex flex-wrap gap-2 p-4 opacity-30 justify-center items-center">
+                            <!-- Finti puntini per l'anteprima -->
+                            <div class="w-1.5 h-1.5 rounded-full bg-black"></div><div class="w-2 h-2 rounded-full bg-black mt-4"></div><div class="w-1.5 h-1.5 rounded-full bg-black ml-4"></div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="z-10 opacity-50"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </div>
+                    
+                    <p class="text-sm text-[#86868b] leading-relaxed mt-auto">
+                        Tutti parlano di accoglienza, ma chi se ne occupa sul territorio? Una mappatura dei centri di aiuto mostra una geografia fortemente disuguale.
+                    </p>
+                </div>
+
                 <!-- Template Placeholder: Coming Soon -->
                 <div class="border border-gray-200 p-6 md:p-8 bg-[#fbfbfd] flex flex-col min-h-[500px] rounded-2xl opacity-60">
-                    <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 2</span>
+                    <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 3</span>
                     <h3 class="text-2xl font-bold mb-6 text-[#86868b]">In lavorazione...</h3>
                     
                     <div class="h-52 border border-dashed border-gray-300 mb-8 flex items-center justify-center rounded-xl">
@@ -109,17 +156,15 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SCHERMATA ARTICOLO 1 -->
+    <!-- SCHERMATA ARTICOLO 1: RICCHEZZA -->
     <!-- ========================================== -->
-    <div id="article-view" class="hidden-view w-full min-h-screen flex-col">
-        <!-- Pulsante Indietro -->
+    <div id="article-view-1" class="hidden-view w-full min-h-screen flex-col">
         <div class="ui-layer px-6 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
             <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
                 <span>&larr;</span> Torna alla Home
             </button>
         </div>
 
-        <!-- UI Overlay (Top) -->
         <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
             <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
                 <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED &mdash; ISSUE 1
@@ -132,102 +177,228 @@
             </p>
         </header>
 
-        <!-- Canvas Container -->
         <div id="canvas-container" class="h-[40vh] md:h-[50vh] w-full shrink-0 mb-2 md:mb-4 mt-4">
             <canvas id="vizCanvas"></canvas>
         </div>
 
         <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
-            <div class="w-1/3 text-center px-1">
-                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
-                <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.</p>
-            </div>
-            <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
-                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
-                <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.</p>
-            </div>
-            <div class="w-1/3 text-center px-1">
-                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
-                <p class="text-[10px] md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Controllano il <strong>60%</strong>. Da soli, possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.</p>
-            </div>
+            <div class="w-1/3 text-center px-1"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3></div>
+            <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3></div>
+            <div class="w-1/3 text-center px-1"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3></div>
         </div>
 
-        <div class="ui-layer p-2 md:p-8 w-full flex justify-center pb-8 shrink-0">
-            <div class="glass-panel px-3 py-2 md:px-6 md:py-4 flex flex-row gap-3 sm:gap-6 md:gap-12 items-center shadow-sm border border-gray-300">
-                <div class="flex items-center gap-1.5 md:gap-3"><div class="w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-[#c7c7cc] bg-[#e5e5ea] shrink-0"></div><div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più poveri</div></div>
-                <div class="flex items-center gap-1.5 md:gap-3"><div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#86868b] shrink-0"></div><div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">Classe media</div></div>
-                <div class="flex items-center gap-1.5 md:gap-3"><div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#1d1d1f] shrink-0"></div><div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più ricchi</div></div>
-            </div>
-        </div>
-
-        <!-- Sezione di testo e grafico aggiuntiva (Responsive Fix) -->
+        <!-- Chart e Testo Issue 1 -->
         <article class="ui-layer w-full max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-24">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">La fotografia di un Paese diviso</h3>
-            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-                L'animazione che hai appena esplorato non è un'astrazione visiva, ma la traduzione letterale dei dati sulla ricchezza nazionale forniti da Banca d'Italia. Mentre il dibattito pubblico si concentra spesso su fluttuazioni percentuali minime del PIL o dell'inflazione, l'elefante nella stanza rimane la <strong>struttura della disuguaglianza</strong>.
-            </p>
-            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-12">
-                Oggi, i decili più bassi della popolazione non solo non partecipano alla crescita economica, ma vedono erodere il proprio potere d'acquisto. Nel grafico sottostante è evidente la sproporzione: la linea che divide il ceto medio dai super-ricchi non è mai stata così netta.
-            </p>
-
-            <!-- Grafico Chart.js (Mobile Optimized) -->
-            <div class="w-full bg-white border border-gray-200 p-5 md:p-8 rounded-2xl shadow-sm mb-12 overflow-hidden">
+            <div class="w-full bg-white border border-gray-200 p-5 md:p-8 rounded-2xl shadow-sm mb-12 overflow-hidden mt-8">
                 <h4 class="text-xs md:text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%)</h4>
                 <div class="relative h-[250px] md:h-[300px] w-full">
                     <canvas id="staticWealthChart"></canvas>
                 </div>
             </div>
-
-            <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Perché dovrebbe importarci?</h3>
-            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-                Questa concentrazione estrema non è solo un problema morale o filosofico. È, prima di tutto, un immenso <strong>freno all'economia reale</strong>. Quando la ricchezza ristagna al vertice (spesso immobilizzata in rendite o patrimoni non produttivi), la domanda interna crolla. I consumi si contraggono e l'ascensore sociale si blocca.
-            </p>
-            <p class="text-base md:text-lg text-gray-700 leading-relaxed pb-12">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-12">
                 Continuare a ignorare questo divario significa accettare un sistema profondamente "unbalanced", che sacrifica la stabilità e il benessere della maggioranza per proteggere l'accumulo al vertice.
             </p>
         </article>
     </div>
 
+    <!-- ========================================== -->
+    <!-- SCHERMATA ARTICOLO 2: INTEGRAZIONE MAPPA   -->
+    <!-- ========================================== -->
+    <div id="article-view-2" class="hidden-view w-full min-h-screen flex-col bg-white">
+        
+        <!-- Pulsante Indietro -->
+        <div class="ui-layer px-6 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
+            <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
+                <span>&larr;</span> Torna alla Home
+            </button>
+        </div>
 
-    <!-- Script Logica e Animazione -->
-    <script>
-        // --- LOGICA DELLA SINGLE PAGE APPLICATION ---
-        const homeView = document.getElementById('home-view');
-        const articleView = document.getElementById('article-view');
-        let animationId = null;
-        let staticChartInstance = null; // Variabile per tracciare il grafico
+        <!-- Header Issue 2 -->
+        <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
+            <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
+                <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED &mdash; ISSUE 2
+            </h2>
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Integrazione, davvero?</h1>
+            <p class="text-base md:text-lg text-[#86868b] max-w-xl leading-relaxed">
+                Tutti i governi parlano di accoglienza e gestione dei flussi, ma nei fatti <strong>chi si occupa dell'integrazione</strong> sul territorio? 
+                Abbiamo mappato i centri di supporto attivi: la geografia della solidarietà (e dei fondi) rivela un Paese spaccato a metà.
+            </p>
+        </header>
 
-        function openArticle() {
-            homeView.classList.add('hidden-view');
-            articleView.classList.remove('hidden-view');
-            articleView.classList.add('flex');
-            initSimulation();
+        <!-- D3 Map Container -->
+        <div class="w-full bg-[#fbfbfd] border-y border-gray-200 my-8 py-8 md:py-16 relative flex flex-col items-center">
+            <div class="absolute top-8 left-8 max-w-xs z-10 hidden md:block">
+                <h3 class="font-bold text-lg mb-2">Mappa dei Centri</h3>
+                <p class="text-sm text-gray-500">Ogni punto rappresenta un centro di accoglienza, sportello legale o hub di integrazione registrato.</p>
+            </div>
             
-            // Inizializza il grafico statico quando si apre l'articolo e ritarda leggermente per dare tempo al layout
-            setTimeout(() => {
-                initStaticChart();
-            }, 100);
+            <!-- SVG dove D3 disegnerà la mappa -->
+            <svg id="italy-map" class="w-full max-w-3xl h-[60vh] md:h-[70vh]" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid meet"></svg>
+            
+            <!-- Legenda Mappa -->
+            <div class="flex items-center gap-6 mt-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-[#1d1d1f] opacity-80"></div>
+                    <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Centro attivo</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded bg-[#e5e5ea] border border-white"></div>
+                    <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Aree analizzate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corpo dell'articolo Issue 2 -->
+        <article class="w-full max-w-3xl mx-auto px-6 md:px-12 py-8 md:py-16">
+            <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Un peso mal distribuito</h3>
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
+                Basta un colpo d'occhio alla mappa per notare l'evidente squilibrio. Il Nord Italia – in particolare Lombardia, Piemonte e Veneto – concentra una rete fittissima di strutture. Al Sud, l'eccezione è rappresentata dalla Sicilia e dalle coste calabresi, territori di primo approdo.
+            </p>
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-12">
+                Ma cosa succede nel mezzo? Enormi aree del Centro e del Sud peninsulare appaiono come "deserti dell'integrazione". Questo significa che una persona migrante trasferita in quelle zone ha un accesso quasi nullo a corsi di lingua, supporto psicologico o avviamento al lavoro. Non è integrazione: è semplice parcheggio.
+            </p>
+
+            <div class="p-6 md:p-8 bg-gray-50 border-l-4 border-[#1d1d1f] rounded-r-xl mb-12">
+                <h4 class="font-bold text-lg mb-2">Il paradosso dei fondi</h4>
+                <p class="text-sm md:text-base text-gray-600">
+                    Le regioni con meno centri sono spesso quelle che ricevono proporzionalmente più fondi per l'emergenza, ma mancano bandi strutturali per progetti a lungo termine. Il terzo settore fa il possibile, ma senza una regia nazionale, la disuguaglianza territoriale diventa incolmabile.
+                </p>
+            </div>
+        </article>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SCRIPT GLOBALI                             -->
+    <!-- ========================================== -->
+    <script>
+        // --- LOGICA DI NAVIGAZIONE SPA ---
+        const homeView = document.getElementById('home-view');
+        let currentArticleId = null;
+
+        function openArticle(id) {
+            homeView.classList.add('hidden-view');
+            const article = document.getElementById(`article-view-${id}`);
+            if(article) {
+                article.classList.remove('hidden-view');
+                article.classList.add('flex');
+                currentArticleId = id;
+                
+                // Avvia gli script specifici per ogni issue
+                if(id === 1) {
+                    initSimulation();
+                    setTimeout(initStaticChart, 100);
+                } else if(id === 2) {
+                    initMap();
+                }
+            }
         }
 
         function closeArticle() {
-            articleView.classList.add('hidden-view');
-            articleView.classList.remove('flex');
+            if(currentArticleId) {
+                const article = document.getElementById(`article-view-${currentArticleId}`);
+                article.classList.add('hidden-view');
+                article.classList.remove('flex');
+            }
             homeView.classList.remove('hidden-view');
+            
+            // Pulisci le animazioni se attive
             if (animationId) cancelAnimationFrame(animationId);
+            currentArticleId = null;
         }
 
-        // --- FUNZIONE PER IL GRAFICO STATICO (Chart.js) ---
+        // ==========================================
+        // LOGICA ISSUE 2: MAPPA D3.JS
+        // ==========================================
+        let mapInitialized = false;
+
+        async function initMap() {
+            if (mapInitialized) return; 
+            
+            const svg = d3.select("#italy-map");
+            const width = 600;
+            const height = 800;
+
+            const projection = d3.geoAlbers()
+                .center([12.5, 41.5]) 
+                .rotate([0, 0])
+                .parallels([35, 45])
+                .scale(3200)
+                .translate([width / 2, height / 2]);
+
+            const path = d3.geoPath().projection(projection);
+
+            try {
+                const italyGeoJSON = await d3.json("https://raw.githubusercontent.com/openpolis/geojson-italy/master/geojson/limits_IT_regions.geojson");
+
+                svg.append("g")
+                    .selectAll("path")
+                    .data(italyGeoJSON.features)
+                    .enter()
+                    .append("path")
+                    .attr("d", path)
+                    .attr("class", "map-region");
+
+                const centers = [];
+                
+                for(let i=0; i<80; i++) {
+                    centers.push([ 7.5 + Math.random() * 5, 44.5 + Math.random() * 1.5 ]);
+                }
+                for(let i=0; i<30; i++) {
+                    centers.push([ 12.5 + Math.random() * 3, 37 + Math.random() * 1.5 ]);
+                }
+                for(let i=0; i<15; i++) {
+                    centers.push([ 11 + Math.random() * 5, 39.5 + Math.random() * 4 ]);
+                }
+                centers.push([12.49, 41.90], [12.5, 41.8], [9.19, 45.46], [9.2, 45.5]);
+
+                svg.append("g")
+                    .selectAll("circle")
+                    .data(centers)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "map-point")
+                    .attr("cx", d => projection(d)[0])
+                    .attr("cy", d => projection(d)[1])
+                    .attr("r", 0) 
+                    .transition()
+                    .duration(800)
+                    .delay((d, i) => i * 15) 
+                    .attr("r", 4);
+
+                mapInitialized = true;
+
+            } catch (error) {
+                console.error("Errore nel caricamento della mappa:", error);
+                svg.append("text")
+                   .attr("x", width/2)
+                   .attr("y", height/2)
+                   .attr("text-anchor", "middle")
+                   .attr("fill", "#86868b")
+                   .text("Errore nel caricamento dei dati geografici.");
+            }
+        }
+
+
+        // ==========================================
+        // LOGICA ISSUE 1 (Animazione + Chart.js)
+        // ==========================================
+        let animationId = null;
+        let staticChartInstance = null; 
+        const canvas1 = document.getElementById('vizCanvas');
+        const ctx1 = canvas1.getContext('2d');
+        let width1, height1;
+        let dots = [];
+        let scaleFactor = 180; 
+        let mouse = { x: -1000, y: -1000, radius: 100 }; 
+
         function initStaticChart() {
             const canvasEl = document.getElementById('staticWealthChart');
             if (!canvasEl) return;
             const ctx = canvasEl.getContext('2d');
-            
-            // Distruggi il grafico se esiste già per evitare sovrapposizioni
-            if (staticChartInstance) {
-                staticChartInstance.destroy();
-            }
+            if (staticChartInstance) staticChartInstance.destroy();
 
-            // Manteniamo la stessa palette colori coerente con i pallini
             staticChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -235,226 +406,110 @@
                     datasets: [{
                         label: 'Quota di ricchezza totale (%)',
                         data: [7.4, 32.6, 60.0],
-                        backgroundColor: [
-                            '#e5e5ea', // Colore poveri
-                            '#86868b', // Colore ceto medio
-                            '#1d1d1f'  // Colore ricchi
-                        ],
-                        borderWidth: 0,
-                        borderRadius: 6,
-                        barPercentage: 0.7
+                        backgroundColor: ['#e5e5ea', '#86868b', '#1d1d1f'],
+                        borderWidth: 0, borderRadius: 6, barPercentage: 0.7
                     }]
                 },
                 options: {
-                    indexAxis: 'y', // Rende il grafico orizzontale
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false // Nascondiamo la legenda generica per pulizia
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed.x + '% della ricchezza';
-                                }
-                            }
-                        }
-                    },
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: {
-                            max: 100,
-                            grid: {
-                                color: '#f3f4f6'
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    weight: 'bold',
-                                    family: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
-                                },
-                                color: '#1d1d1f'
-                            }
-                        }
+                        x: { max: 100, grid: { color: '#f3f4f6' }, ticks: { callback: v => v + '%' } },
+                        y: { grid: { display: false }, ticks: { font: { weight: 'bold' }, color: '#1d1d1f' } }
                     }
                 }
             });
         }
 
-        // --- LOGICA DELL'ANIMAZIONE (CANVAS) PER ISSUE 1 ---
-        const canvas = document.getElementById('vizCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let dots = [];
-        let scaleFactor = 180; 
-
-        let mouse = { x: -1000, y: -1000, radius: 100 }; 
-        
         function updatePointerPosition(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            mouse.x = clientX - rect.left;
-            mouse.y = clientY - rect.top;
+            const rect = canvas1.getBoundingClientRect();
+            mouse.x = clientX - rect.left; mouse.y = clientY - rect.top;
         }
-
         window.addEventListener('mousemove', (e) => updatePointerPosition(e.clientX, e.clientY));
         window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; });
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) updatePointerPosition(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true });
-        window.addEventListener('touchend', () => { mouse.x = -1000; mouse.y = -1000; });
-
+        
         const groups = [
             { count: 50, wealthRatio: 0.148, color: '#e5e5ea', border: '#c7c7cc', alignX: 0.166 }, 
             { count: 40, wealthRatio: 0.815, color: '#86868b', alignX: 0.500 }, 
             { count: 10, wealthRatio: 6.000, color: '#1d1d1f', alignX: 0.833 }  
         ];
 
-        class Dot {
+        class Dot1 {
             constructor(group) {
                 this.group = group;
                 this.radius = Math.sqrt(group.wealthRatio * scaleFactor);
-                this.x = (width * group.alignX) + (Math.random() - 0.5) * 60;
-                this.y = (height * 0.5) + (Math.random() - 0.5) * 60;
-                this.vx = 0;
-                this.vy = 0;
-                this.color = group.color;
-                this.border = group.border || null;
+                this.x = (width1 * group.alignX) + (Math.random() - 0.5) * 60;
+                this.y = (height1 * 0.5) + (Math.random() - 0.5) * 60;
+                this.vx = 0; this.vy = 0;
+                this.color = group.color; this.border = group.border || null;
                 this.mass = this.radius; 
             }
-
             draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                if (this.border) {
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = this.border;
-                    ctx.stroke();
-                }
-                ctx.closePath();
+                ctx1.beginPath(); ctx1.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx1.fillStyle = this.color; ctx1.fill();
+                if (this.border) { ctx1.lineWidth = 2; ctx1.strokeStyle = this.border; ctx1.stroke(); }
+                ctx1.closePath();
             }
-
             update() {
-                const targetX = width * this.group.alignX;
-                const targetY = height * 0.5; 
-                const dx = targetX - this.x;
-                const dy = targetY - this.y;
-                
-                this.vx += dx * 0.005;
-                this.vy += dy * 0.005;
-
-                const distMouseX = this.x - mouse.x;
-                const distMouseY = this.y - mouse.y;
-                const distMouse = Math.sqrt(distMouseX * distMouseX + distMouseY * distMouseY);
+                const targetX = width1 * this.group.alignX; const targetY = height1 * 0.5; 
+                this.vx += (targetX - this.x) * 0.005; this.vy += (targetY - this.y) * 0.005;
+                const distMouse = Math.sqrt((this.x - mouse.x)**2 + (this.y - mouse.y)**2);
                 if (distMouse < mouse.radius) {
                     const force = (mouse.radius - distMouse) / mouse.radius;
-                    this.vx += (distMouseX / distMouse) * force * 0.2;
-                    this.vy += (distMouseY / distMouse) * force * 0.2;
+                    this.vx += ((this.x - mouse.x) / distMouse) * force * 0.2;
+                    this.vy += ((this.y - mouse.y) / distMouse) * force * 0.2;
                 }
-
-                this.vx *= 0.82;
-                this.vy *= 0.82;
-
-                this.x += this.vx;
-                this.y += this.vy;
-
+                this.vx *= 0.82; this.vy *= 0.82;
+                this.x += this.vx; this.y += this.vy;
                 if (this.x - this.radius < 0) { this.x = this.radius; this.vx *= -0.5; }
-                if (this.x + this.radius > width) { this.x = width - this.radius; this.vx *= -0.5; }
+                if (this.x + this.radius > width1) { this.x = width1 - this.radius; this.vx *= -0.5; }
                 if (this.y - this.radius < 0) { this.y = this.radius; this.vy *= -0.5; }
-                if (this.y + this.radius > height) { this.y = height - this.radius; this.vy *= -0.5; }
+                if (this.y + this.radius > height1) { this.y = height1 - this.radius; this.vy *= -0.5; }
             }
         }
 
-        function resize() {
+        function resize1() {
             const container = document.getElementById('canvas-container');
-            if(container.clientWidth === 0) return;
-            
-            width = container.clientWidth;
-            height = container.clientHeight;
-            canvas.width = width;
-            canvas.height = height;
-
-            scaleFactor = width < 768 ? 60 : 180;
-
-            if (dots.length > 0) {
-                dots.forEach(dot => {
-                    dot.radius = Math.sqrt(dot.group.wealthRatio * scaleFactor);
-                    dot.mass = dot.radius;
-                });
-            }
+            if(!container || container.clientWidth === 0) return;
+            width1 = container.clientWidth; height1 = container.clientHeight;
+            canvas1.width = width1; canvas1.height = height1;
+            scaleFactor = width1 < 768 ? 60 : 180;
+            if (dots.length > 0) dots.forEach(dot => { dot.radius = Math.sqrt(dot.group.wealthRatio * scaleFactor); dot.mass = dot.radius; });
         }
+        window.addEventListener('resize', () => { if(currentArticleId === 1) resize1(); });
 
-        window.addEventListener('resize', resize);
-
-        function resolveCollisions() {
+        function resolveCollisions1() {
             for (let i = 0; i < dots.length; i++) {
                 for (let j = i + 1; j < dots.length; j++) {
-                    let dotA = dots[i];
-                    let dotB = dots[j];
-                    
-                    let dx = dotB.x - dotA.x;
-                    let dy = dotB.y - dotA.y;
+                    let dx = dots[j].x - dots[i].x, dy = dots[j].y - dots[i].y;
                     let distance = Math.sqrt(dx * dx + dy * dy);
-                    let minDistance = dotA.radius + dotB.radius + 4; 
-
+                    let minDistance = dots[i].radius + dots[j].radius + 4; 
                     if (distance < minDistance) {
                         let angle = Math.atan2(dy, dx);
-                        let targetX = dotA.x + Math.cos(angle) * minDistance;
-                        let targetY = dotA.y + Math.sin(angle) * minDistance;
-                        
-                        let ax = (targetX - dotB.x) * 0.06;
-                        let ay = (targetY - dotB.y) * 0.06;
-
-                        let totalMass = dotA.mass + dotB.mass;
-                        let ratioA = dotB.mass / totalMass;
-                        let ratioB = dotA.mass / totalMass;
-
-                        dotA.vx -= ax * ratioA;
-                        dotA.vy -= ay * ratioA;
-                        dotB.vx += ax * ratioB;
-                        dotB.vy += ay * ratioB;
+                        let ax = ((dots[i].x + Math.cos(angle) * minDistance) - dots[j].x) * 0.06;
+                        let ay = ((dots[i].y + Math.sin(angle) * minDistance) - dots[j].y) * 0.06;
+                        let totalMass = dots[i].mass + dots[j].mass;
+                        dots[i].vx -= ax * (dots[j].mass / totalMass); dots[i].vy -= ay * (dots[j].mass / totalMass);
+                        dots[j].vx += ax * (dots[i].mass / totalMass); dots[j].vy += ay * (dots[i].mass / totalMass);
                     }
                 }
             }
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            resolveCollisions();
-
-            const sortedDots = [...dots].sort((a, b) => b.radius - a.radius);
-            sortedDots.forEach(dot => {
-                dot.update();
-                dot.draw();
-            });
-
-            animationId = requestAnimationFrame(animate);
+        function animate1() {
+            if(currentArticleId !== 1) return;
+            ctx1.clearRect(0, 0, width1, height1);
+            resolveCollisions1();
+            [...dots].sort((a, b) => b.radius - a.radius).forEach(d => { d.update(); d.draw(); });
+            animationId = requestAnimationFrame(animate1);
         }
 
         function initSimulation() {
-            dots = [];
-            resize();
-            
-            groups.forEach(group => {
-                for (let i = 0; i < group.count; i++) {
-                    dots.push(new Dot(group));
-                }
-            });
-            
+            dots = []; resize1();
+            groups.forEach(g => { for (let i = 0; i < g.count; i++) dots.push(new Dot1(g)); });
             if (animationId) cancelAnimationFrame(animationId);
-            animate();
+            animate1();
         }
-
     </script>
 </body>
 </html>
