@@ -42,7 +42,6 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(0,0,0,0.05);
-            /* Rimosso border-radius per coerenza con gli angoli squadrati */
         }
     </style>
 </head>
@@ -54,10 +53,13 @@
     <div id="home-view" class="max-w-7xl mx-auto px-6 py-12 flex flex-col min-h-screen">
         
         <!-- Header Home (Allineato a sinistra) -->
-        <!-- Ridotto il margine inferiore (mb-10 md:mb-16) per avvicinare le card alla linea -->
         <header class="flex flex-col items-start text-left mb-10 md:mb-16 border-b border-gray-200 pb-8 md:pb-12">
-            <h1 class="text-4xl md:text-6xl font-semibold tracking-widest uppercase mb-4">
-                <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED
+            <h1 class="text-4xl md:text-6xl font-semibold tracking-widest uppercase mb-4 flex items-baseline">
+                <strong class="text-[#1d1d1f] font-black">
+                    <!-- Ridotto mr-[8px] a mr-[2px] per avvicinare la B -->
+                    U<span class="inline-block transform scale-x-[1.65] ml-[6px] mr-[2px]">N</span>
+                </strong>
+                BALANCED
             </h1>
             <p class="text-[#86868b] text-base md:text-lg max-w-md leading-relaxed">
                 Rubrica per una giustizia sociale contro le disuguaglianze. Indagini, approfondimenti e dati.
@@ -123,7 +125,9 @@
 
         <!-- UI Overlay (Top) -->
         <header class="ui-layer p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
-            <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2"><strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED</h2>
+            <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
+                <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED
+            </h2>
             <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Italia per pochi.</h1>
             <p class="text-lg text-[#86868b] max-w-xl leading-relaxed">
                 Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. 
