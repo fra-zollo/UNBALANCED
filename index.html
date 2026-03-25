@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNBALANCED | Simpler Visualization</title>
+    <title>UNBALANCED | Rubrica per una giustizia sociale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -16,8 +16,14 @@
             color: var(--apple-text);
             margin: 0;
             -webkit-font-smoothing: antialiased;
-            /* Rimosso overflow: hidden per permettere lo scorrimento naturale */
         }
+        
+        /* Utility per nascondere le schermate */
+        .hidden-view {
+            display: none !important;
+        }
+
+        /* Stili Canvas */
         #canvas-container {
             width: 100%;
             position: relative;
@@ -31,92 +37,183 @@
             position: relative;
             z-index: 10;
         }
-        /* Glassmorphism for the legend */
         .glass-panel {
             background: rgba(251, 251, 253, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(0,0,0,0.05);
-            border-radius: 20px;
+            /* Rimosso border-radius per coerenza con gli angoli squadrati */
         }
     </style>
 </head>
-<body class="w-full min-h-screen flex flex-col">
+<body class="w-full min-h-screen">
 
-    <!-- UI Overlay (Top) -->
-    <header class="ui-layer p-8 md:px-12 md:pt-12 max-w-4xl">
-        <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2"><strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED</h2>
-        <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Italia per pochi.</h1>
-        <p class="text-lg text-[#86868b] max-w-xl leading-relaxed">
-            Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. 
-            La <strong>dimensione</strong> del punto rappresenta la loro quota della <strong>ricchezza</strong> totale della nazione. 
-            Muovi il mouse per interagire con l'economia.
-        </p>
-    </header>
+    <!-- ========================================== -->
+    <!-- SCHERMATA HOME -->
+    <!-- ========================================== -->
+    <div id="home-view" class="max-w-7xl mx-auto px-6 py-12 flex flex-col min-h-screen">
+        
+        <!-- Header Home (Allineato a sinistra) -->
+        <!-- Ridotto il margine inferiore (mb-10 md:mb-16) per avvicinare le card alla linea -->
+        <header class="flex flex-col items-start text-left mb-10 md:mb-16 border-b border-gray-200 pb-8 md:pb-12">
+            <h1 class="text-4xl md:text-6xl font-semibold tracking-widest uppercase mb-4">
+                <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED
+            </h1>
+            <p class="text-[#86868b] text-base md:text-lg max-w-md leading-relaxed">
+                Rubrica per una giustizia sociale contro le disuguaglianze. Indagini, approfondimenti e dati.
+            </p>
+        </header>
 
-    <!-- Canvas Container (Middle) -->
-    <!-- Altezza fissa ridotta per avvicinare i punti al testo sottostante e rimosso il margine inferiore eccessivo -->
-    <div id="canvas-container" class="h-[40vh] md:h-[50vh] shrink-0 mb-2 md:mb-4 mt-4">
-        <canvas id="vizCanvas"></canvas>
+        <!-- Griglia degli Issues -->
+        <main class="flex-grow">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- ISSUE 1: Italia per pochi -->
+                <div onclick="openArticle()" class="border border-gray-400 p-6 md:p-8 bg-white cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group flex flex-col min-h-[500px] rounded-2xl">
+                    <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 1</span>
+                    <h3 class="text-2xl font-bold mb-6 group-hover:text-[#86868b] transition-colors">Italia per pochi.</h3>
+                    
+                    <!-- Piccola anteprima visiva stilizzata (Resa più alta e arrotondata) -->
+                    <div class="h-52 border border-gray-200 bg-[#fbfbfd] mb-8 flex items-center justify-center relative overflow-hidden rounded-xl">
+                        <div class="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-200 via-transparent to-transparent"></div>
+                        <div class="flex items-end gap-3 z-10">
+                            <!-- Poveri -->
+                            <div class="flex gap-1"><div class="w-2 h-2 rounded-full bg-[#e5e5ea] border border-[#c7c7cc]"></div><div class="w-2 h-2 rounded-full bg-[#e5e5ea] border border-[#c7c7cc]"></div><div class="w-2 h-2 rounded-full bg-[#e5e5ea] border border-[#c7c7cc]"></div></div>
+                            <!-- Medi -->
+                            <div class="flex gap-1 mb-1"><div class="w-3 h-3 rounded-full bg-[#86868b]"></div><div class="w-3 h-3 rounded-full bg-[#86868b]"></div></div>
+                            <!-- Ricchi -->
+                            <div class="w-8 h-8 rounded-full bg-[#1d1d1f] mb-2 shadow-lg"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-[#86868b] leading-relaxed mt-auto">
+                        Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. Un viaggio interattivo per scoprire chi detiene il 100% della ricchezza.
+                    </p>
+                </div>
+
+                <!-- ISSUE 2: Coming Soon -->
+                <div class="border border-gray-200 p-6 md:p-8 bg-[#fbfbfd] flex flex-col min-h-[500px] rounded-2xl opacity-60">
+                    <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 2</span>
+                    <h3 class="text-2xl font-bold mb-6 text-[#86868b]">In lavorazione...</h3>
+                    
+                    <div class="h-52 border border-dashed border-gray-300 mb-8 flex items-center justify-center rounded-xl">
+                        <span class="text-xs text-gray-400 uppercase tracking-widest">Prossimamente</span>
+                    </div>
+                    
+                    <p class="text-sm text-[#86868b] leading-relaxed mt-auto">
+                        Nuovi dati e nuove indagini sulle disuguaglianze strutturali sono in fase di elaborazione.
+                    </p>
+                </div>
+
+            </div>
+        </main>
     </div>
 
-    <!-- Cluster Labels (Posizionate sotto il canvas, ora libere di scorrere) -->
-    <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
+    <!-- ========================================== -->
+    <!-- SCHERMATA ARTICOLO (L'inchiesta interattiva) -->
+    <!-- ========================================== -->
+    <div id="article-view" class="hidden-view w-full min-h-screen flex-col">
         
-        <!-- Bottom 50% Label -->
-        <div class="w-1/3 text-center px-1">
-            <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
-            <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">
-                Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.
-            </p>
-        </div>
-        
-        <!-- Middle 40% Label -->
-        <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
-            <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
-            <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">
-                La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.
-            </p>
-        </div>
-        
-        <!-- Top 10% Label -->
-        <div class="w-1/3 text-center px-1">
-            <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
-            <p class="text-xs md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">
-                Controllano il <strong>60%</strong>. Da soli, questi 10 possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.
-            </p>
+        <!-- Pulsante Indietro -->
+        <div class="ui-layer px-8 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
+            <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
+                <span>&larr;</span> Torna alla Home
+            </button>
         </div>
 
+        <!-- UI Overlay (Top) -->
+        <header class="ui-layer p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
+            <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2"><strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED</h2>
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Italia per pochi.</h1>
+            <p class="text-lg text-[#86868b] max-w-xl leading-relaxed">
+                Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. 
+                La <strong>dimensione</strong> del punto rappresenta la loro quota della <strong>ricchezza</strong> totale della nazione. 
+                Muovi il mouse per interagire con l'economia.
+            </p>
+        </header>
+
+        <!-- Canvas Container (Middle) -->
+        <div id="canvas-container" class="h-[40vh] md:h-[50vh] shrink-0 mb-2 md:mb-4 mt-4">
+            <canvas id="vizCanvas"></canvas>
+        </div>
+
+        <!-- Cluster Labels -->
+        <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
+            <!-- Bottom 50% Label -->
+            <div class="w-1/3 text-center px-1">
+                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
+                <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">
+                    Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.
+                </p>
+            </div>
+            <!-- Middle 40% Label -->
+            <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
+                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
+                <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">
+                    La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.
+                </p>
+            </div>
+            <!-- Top 10% Label -->
+            <div class="w-1/3 text-center px-1">
+                <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
+                <p class="text-xs md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">
+                    Controllano il <strong>60%</strong>. Da soli, questi 10 possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.
+                </p>
+            </div>
+        </div>
+
+        <!-- UI Overlay (Bottom / Legend) -->
+        <div class="ui-layer p-2 md:p-8 w-full flex justify-center pb-8 shrink-0">
+            <div class="glass-panel px-3 py-2 md:px-6 md:py-4 flex flex-row gap-3 sm:gap-6 md:gap-12 items-center shadow-sm border border-gray-300">
+                <div class="flex items-center gap-1.5 md:gap-3">
+                    <div class="w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-[#c7c7cc] bg-[#e5e5ea] shrink-0"></div>
+                    <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più poveri</div>
+                </div>
+                <div class="flex items-center gap-1.5 md:gap-3">
+                    <div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#86868b] shrink-0"></div>
+                    <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">Classe media</div>
+                </div>
+                <div class="flex items-center gap-1.5 md:gap-3">
+                    <div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#1d1d1f] shrink-0"></div>
+                    <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più ricchi</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- UI Overlay (Bottom / Legend) -->
-    <!-- Rimossa la classe 'mt-auto' per non spingerlo in fondo allo schermo, ora sta subito sotto il testo -->
-    <div class="ui-layer p-2 md:p-8 w-full flex justify-center pb-8 shrink-0">
-        <div class="glass-panel px-3 py-2 md:px-6 md:py-4 flex flex-row gap-3 sm:gap-6 md:gap-12 items-center shadow-sm">
-            
-            <div class="flex items-center gap-1.5 md:gap-3">
-                <div class="w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-[#c7c7cc] bg-[#e5e5ea] shrink-0"></div>
-                <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più poveri</div>
-            </div>
-
-            <div class="flex items-center gap-1.5 md:gap-3">
-                <div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#86868b] shrink-0"></div>
-                <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">Classe media</div>
-            </div>
-
-            <div class="flex items-center gap-1.5 md:gap-3">
-                <div class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#1d1d1f] shrink-0"></div>
-                <div class="text-[10px] sm:text-xs md:text-sm font-bold whitespace-nowrap">I più ricchi</div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Physics & Animation Script -->
+    <!-- Script Logica di Navigazione & Animazione -->
     <script>
+        // --- LOGICA DELLA SINGLE PAGE APPLICATION ---
+        const homeView = document.getElementById('home-view');
+        const articleView = document.getElementById('article-view');
+        let animationId = null;
+
+        function openArticle() {
+            homeView.classList.add('hidden-view');
+            articleView.classList.remove('hidden-view');
+            articleView.classList.add('flex'); // ripristina il flex-col
+            
+            // Inizializza l'animazione solo quando la schermata è visibile
+            initSimulation();
+        }
+
+        function closeArticle() {
+            articleView.classList.add('hidden-view');
+            articleView.classList.remove('flex');
+            homeView.classList.remove('hidden-view');
+            
+            // Ferma l'animazione per risparmiare CPU quando siamo in Home
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        // --- LOGICA DELL'ANIMAZIONE (CANVAS) ---
         const canvas = document.getElementById('vizCanvas');
         const ctx = canvas.getContext('2d');
         let width, height;
+        let dots = [];
+        let scaleFactor = 180; 
 
         // Mouse and Touch interaction
         let mouse = { x: -1000, y: -1000, radius: 100 }; 
@@ -127,69 +224,26 @@
             mouse.y = clientY - rect.top;
         }
 
-        // Mouse events (Desktop)
-        window.addEventListener('mousemove', (e) => {
-            updatePointerPosition(e.clientX, e.clientY);
-        });
-
-        window.addEventListener('mouseout', () => {
-            mouse.x = -1000;
-            mouse.y = -1000;
-        });
-
-        // Touch events (Mobile)
+        window.addEventListener('mousemove', (e) => updatePointerPosition(e.clientX, e.clientY));
+        window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; });
+        
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                updatePointerPosition(e.touches[0].clientX, e.touches[0].clientY);
-            }
-        }, { passive: true }); // passive: true permette alla pagina di continuare a scorrere normalmente
-
-        window.addEventListener('touchend', () => {
-            mouse.x = -1000;
-            mouse.y = -1000;
-        });
-
-        // Data configuration
-        let scaleFactor = 180; 
+            if (e.touches.length > 0) updatePointerPosition(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        window.addEventListener('touchend', () => { mouse.x = -1000; mouse.y = -1000; });
 
         const groups = [
-            // Allineati esattamente con le 3 colonne di testo sottostanti (16%, 50%, 84%)
             { count: 50, wealthRatio: 0.148, color: '#e5e5ea', border: '#c7c7cc', alignX: 0.166 }, 
             { count: 40, wealthRatio: 0.815, color: '#86868b', alignX: 0.500 }, 
             { count: 10, wealthRatio: 6.000, color: '#1d1d1f', alignX: 0.833 }  
         ];
 
-        let dots = [];
-
-        // Resize handler
-        function resize() {
-            const container = document.getElementById('canvas-container');
-            width = container.clientWidth;
-            height = container.clientHeight;
-            canvas.width = width;
-            canvas.height = height;
-
-            // Make dots smaller on mobile to prevent overlapping clusters
-            scaleFactor = width < 768 ? 60 : 180;
-
-            if (dots.length > 0) {
-                dots.forEach(dot => {
-                    dot.radius = Math.sqrt(dot.group.wealthRatio * scaleFactor);
-                    dot.mass = dot.radius;
-                });
-            }
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
         class Dot {
             constructor(group) {
                 this.group = group;
                 this.radius = Math.sqrt(group.wealthRatio * scaleFactor);
-                
                 this.x = (width * group.alignX) + (Math.random() - 0.5) * 60;
                 this.y = (height * 0.5) + (Math.random() - 0.5) * 60;
-                
                 this.vx = 0;
                 this.vy = 0;
                 this.color = group.color;
@@ -211,35 +265,29 @@
             }
 
             update() {
-                // 1. Cluster Gravity
                 const targetX = width * this.group.alignX;
-                const targetY = height * 0.5; // Centrati verticalmente
+                const targetY = height * 0.5; 
                 const dx = targetX - this.x;
                 const dy = targetY - this.y;
                 
                 this.vx += dx * 0.005;
                 this.vy += dy * 0.005;
 
-                // 2. Mouse Repulsion
                 const distMouseX = this.x - mouse.x;
                 const distMouseY = this.y - mouse.y;
                 const distMouse = Math.sqrt(distMouseX * distMouseX + distMouseY * distMouseY);
                 if (distMouse < mouse.radius) {
                     const force = (mouse.radius - distMouse) / mouse.radius;
-                    // Gentler push from the mouse
                     this.vx += (distMouseX / distMouse) * force * 0.2;
                     this.vy += (distMouseY / distMouse) * force * 0.2;
                 }
 
-                // 3. Friction
                 this.vx *= 0.82;
                 this.vy *= 0.82;
 
-                // Apply velocity
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // 4. Boundary bounce
                 if (this.x - this.radius < 0) { this.x = this.radius; this.vx *= -0.5; }
                 if (this.x + this.radius > width) { this.x = width - this.radius; this.vx *= -0.5; }
                 if (this.y - this.radius < 0) { this.y = this.radius; this.vy *= -0.5; }
@@ -247,14 +295,27 @@
             }
         }
 
-        // Initialize particles
-        groups.forEach(group => {
-            for (let i = 0; i < group.count; i++) {
-                dots.push(new Dot(group));
-            }
-        });
+        function resize() {
+            const container = document.getElementById('canvas-container');
+            if(container.clientWidth === 0) return; // Evita bug se nascosto
+            
+            width = container.clientWidth;
+            height = container.clientHeight;
+            canvas.width = width;
+            canvas.height = height;
 
-        // Soft collision resolution between dots
+            scaleFactor = width < 768 ? 60 : 180;
+
+            if (dots.length > 0) {
+                dots.forEach(dot => {
+                    dot.radius = Math.sqrt(dot.group.wealthRatio * scaleFactor);
+                    dot.mass = dot.radius;
+                });
+            }
+        }
+
+        window.addEventListener('resize', resize);
+
         function resolveCollisions() {
             for (let i = 0; i < dots.length; i++) {
                 for (let j = i + 1; j < dots.length; j++) {
@@ -287,24 +348,34 @@
             }
         }
 
-        // Animation loop
         function animate() {
             ctx.clearRect(0, 0, width, height);
-
             resolveCollisions();
 
-            // Draw smaller dots last so they don't get hidden behind massive ones
             const sortedDots = [...dots].sort((a, b) => b.radius - a.radius);
-
             sortedDots.forEach(dot => {
                 dot.update();
                 dot.draw();
             });
 
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
         }
 
-        animate();
+        function initSimulation() {
+            // Ricostruiamo i punti ogni volta che apriamo la vista per sicurezza e per adattare alla finestra
+            dots = [];
+            resize();
+            
+            groups.forEach(group => {
+                for (let i = 0; i < group.count; i++) {
+                    dots.push(new Dot(group));
+                }
+            });
+            
+            if (animationId) cancelAnimationFrame(animationId);
+            animate();
+        }
+
     </script>
 </body>
 </html>
