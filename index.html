@@ -47,7 +47,7 @@
         }
     </style>
 </head>
-<body class="w-full min-h-screen relative">
+<body class="w-full min-h-screen relative overflow-x-hidden">
 
     <!-- ========================================== -->
     <!-- SCHERMATA HOME -->
@@ -113,19 +113,19 @@
     <!-- ========================================== -->
     <div id="article-view" class="hidden-view w-full min-h-screen flex-col">
         <!-- Pulsante Indietro -->
-        <div class="ui-layer px-8 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
+        <div class="ui-layer px-6 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
             <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
                 <span>&larr;</span> Torna alla Home
             </button>
         </div>
 
         <!-- UI Overlay (Top) -->
-        <header class="ui-layer p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
+        <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
             <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
                 <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED &mdash; ISSUE 1
             </h2>
             <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Italia per pochi.</h1>
-            <p class="text-lg text-[#86868b] max-w-xl leading-relaxed">
+            <p class="text-base md:text-lg text-[#86868b] max-w-xl leading-relaxed">
                 Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. 
                 La <strong>dimensione</strong> del punto rappresenta la loro quota della <strong>ricchezza</strong> totale della nazione. 
                 Muovi il mouse per interagire con l'economia.
@@ -133,22 +133,22 @@
         </header>
 
         <!-- Canvas Container -->
-        <div id="canvas-container" class="h-[40vh] md:h-[50vh] shrink-0 mb-2 md:mb-4 mt-4">
+        <div id="canvas-container" class="h-[40vh] md:h-[50vh] w-full shrink-0 mb-2 md:mb-4 mt-4">
             <canvas id="vizCanvas"></canvas>
         </div>
 
         <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
             <div class="w-1/3 text-center px-1">
                 <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
-                <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.</p>
+                <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.</p>
             </div>
             <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
                 <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
-                <p class="text-xs md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.</p>
+                <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.</p>
             </div>
             <div class="w-1/3 text-center px-1">
                 <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
-                <p class="text-xs md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Controllano il <strong>60%</strong>. Da soli, questi 10 possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.</p>
+                <p class="text-[10px] md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Controllano il <strong>60%</strong>. Da soli, possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.</p>
             </div>
         </div>
 
@@ -160,29 +160,29 @@
             </div>
         </div>
 
-        <!-- Sezione di testo e grafico aggiuntiva -->
-        <article class="ui-layer max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <!-- Sezione di testo e grafico aggiuntiva (Responsive Fix) -->
+        <article class="ui-layer w-full max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-24">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">La fotografia di un Paese diviso</h3>
-            <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
                 L'animazione che hai appena esplorato non è un'astrazione visiva, ma la traduzione letterale dei dati sulla ricchezza nazionale forniti da Banca d'Italia. Mentre il dibattito pubblico si concentra spesso su fluttuazioni percentuali minime del PIL o dell'inflazione, l'elefante nella stanza rimane la <strong>struttura della disuguaglianza</strong>.
             </p>
-            <p class="text-lg text-gray-700 leading-relaxed mb-12">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-12">
                 Oggi, i decili più bassi della popolazione non solo non partecipano alla crescita economica, ma vedono erodere il proprio potere d'acquisto. Nel grafico sottostante è evidente la sproporzione: la linea che divide il ceto medio dai super-ricchi non è mai stata così netta.
             </p>
 
-            <!-- Grafico Chart.js -->
-            <div class="w-full bg-white border border-gray-200 p-6 md:p-8 rounded-2xl shadow-sm mb-12">
-                <h4 class="text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%)</h4>
-                <div class="relative h-[250px] w-full">
+            <!-- Grafico Chart.js (Mobile Optimized) -->
+            <div class="w-full bg-white border border-gray-200 p-5 md:p-8 rounded-2xl shadow-sm mb-12 overflow-hidden">
+                <h4 class="text-xs md:text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%)</h4>
+                <div class="relative h-[250px] md:h-[300px] w-full">
                     <canvas id="staticWealthChart"></canvas>
                 </div>
             </div>
 
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Perché dovrebbe importarci?</h3>
-            <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
                 Questa concentrazione estrema non è solo un problema morale o filosofico. È, prima di tutto, un immenso <strong>freno all'economia reale</strong>. Quando la ricchezza ristagna al vertice (spesso immobilizzata in rendite o patrimoni non produttivi), la domanda interna crolla. I consumi si contraggono e l'ascensore sociale si blocca.
             </p>
-            <p class="text-lg text-gray-700 leading-relaxed pb-12">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed pb-12">
                 Continuare a ignorare questo divario significa accettare un sistema profondamente "unbalanced", che sacrifica la stabilità e il benessere della maggioranza per proteggere l'accumulo al vertice.
             </p>
         </article>
@@ -202,7 +202,11 @@
             articleView.classList.remove('hidden-view');
             articleView.classList.add('flex');
             initSimulation();
-            initStaticChart(); // Inizializza il grafico statico quando si apre l'articolo
+            
+            // Inizializza il grafico statico quando si apre l'articolo e ritarda leggermente per dare tempo al layout
+            setTimeout(() => {
+                initStaticChart();
+            }, 100);
         }
 
         function closeArticle() {
@@ -214,9 +218,11 @@
 
         // --- FUNZIONE PER IL GRAFICO STATICO (Chart.js) ---
         function initStaticChart() {
-            const ctx = document.getElementById('staticWealthChart').getContext('2d');
+            const canvasEl = document.getElementById('staticWealthChart');
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
             
-            // Distruggi il grafico se esiste già (es. quando esci e rientri) per evitare sovrapposizioni
+            // Distruggi il grafico se esiste già per evitare sovrapposizioni
             if (staticChartInstance) {
                 staticChartInstance.destroy();
             }
