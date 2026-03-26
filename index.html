@@ -73,6 +73,30 @@
             opacity: 1;
             cursor: pointer;
         }
+
+        /* --- STILI PER LO SCROLLYTELLING (ISSUE 1) --- */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes bounceH {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+        .animate-bounce-h {
+            animation: bounceH 2s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="w-full min-h-screen relative overflow-x-hidden">
@@ -123,10 +147,8 @@
                     <span class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-2 block">Issue 2</span>
                     <h3 class="text-2xl font-bold mb-6 group-hover:text-[#86868b] transition-colors">Integrazione, davvero?</h3>
                     
-                    <!-- Placeholder Map Preview -->
                     <div class="h-52 border border-gray-200 bg-[#fbfbfd] mb-8 flex items-center justify-center relative overflow-hidden rounded-xl">
                         <div class="absolute inset-0 flex flex-wrap gap-2 p-4 opacity-30 justify-center items-center">
-                            <!-- Finti puntini per l'anteprima -->
                             <div class="w-1.5 h-1.5 rounded-full bg-black"></div><div class="w-2 h-2 rounded-full bg-black mt-4"></div><div class="w-1.5 h-1.5 rounded-full bg-black ml-4"></div>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="z-10 opacity-50"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
@@ -159,36 +181,107 @@
     <!-- SCHERMATA ARTICOLO 1: RICCHEZZA -->
     <!-- ========================================== -->
     <div id="article-view-1" class="hidden-view w-full min-h-screen flex-col">
+        
+        <!-- Pulsante Indietro -->
         <div class="ui-layer px-6 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
             <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
                 <span>&larr;</span> Torna alla Home
             </button>
         </div>
 
-        <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
+        <!-- Header Titolo (Appare subito) -->
+        <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full text-center md:text-left">
             <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
                 <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED &mdash; ISSUE 1
             </h2>
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Italia per pochi.</h1>
-            <p class="text-base md:text-lg text-[#86868b] max-w-xl leading-relaxed">
-                Ognuno dei 100 punti in movimento rappresenta l'1% della popolazione italiana. 
-                La <strong>dimensione</strong> del punto rappresenta la loro quota della <strong>ricchezza</strong> totale della nazione. 
-                Muovi il mouse per interagire con l'economia.
-            </p>
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Italia per pochi.</h1>
+            
+            <div class="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto md:mx-0 text-left">
+                <p class="mb-4">
+                    Comprendere come è distribuita la ricchezza è fondamentale per misurare la reale salute di una società. Non basta guardare al PIL o alla crescita economica generale: il vero indicatore di giustizia sociale è <strong>nelle tasche di chi finisce quella ricchezza</strong>.
+                </p>
+                <p>
+                    Negli ultimi decenni, la disuguaglianza è esplosa. A livello globale le statistiche sono allarmanti: <strong>l'1% più ricco dell'umanità possiede quasi il 50% della ricchezza totale</strong>, mentre la metà più povera della popolazione mondiale si deve accontentare di appena il 2%. L'Italia non fa eccezione a questo pericoloso trend di concentrazione estrema.
+                </p>
+            </div>
         </header>
 
-        <div id="canvas-container" class="h-[40vh] md:h-[50vh] w-full shrink-0 mb-2 md:mb-4 mt-4">
-            <canvas id="vizCanvas"></canvas>
+        <!-- STEP NARRATIVO 1: Il Pallino Gigante -->
+        <div class="scroll-reveal flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 my-16 md:my-24 px-6">
+            <!-- Testo e Freccia -->
+            <div class="text-center md:text-right flex flex-col items-center md:items-end order-2 md:order-1">
+                <p class="text-xl md:text-3xl font-bold text-[#1d1d1f] max-w-sm mb-4">
+                    Questa è tutta la ricchezza netta in Italia.
+                </p>
+                <p class="text-3xl md:text-5xl font-black text-[#1d1d1f] mb-4">
+                    10.421 <span class="text-lg md:text-2xl text-[#86868b] font-bold block md:inline">Miliardi di €</span>
+                </p>
+                <!-- Freccia animata Desktop -->
+                <svg class="w-12 h-12 mt-2 text-[#86868b] hidden md:block animate-bounce-h" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                <!-- Freccia animata Mobile (punta verso l'alto) -->
+                <svg class="w-12 h-12 mt-4 text-[#86868b] md:hidden animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+            </div>
+            <!-- Pallino Grosso -->
+            <div class="order-1 md:order-2">
+                <div class="w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#1d1d1f] shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-center text-white text-opacity-20 font-bold tracking-widest text-xl">100%</div>
+            </div>
         </div>
 
-        <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
-            <div class="w-1/3 text-center px-1"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3></div>
-            <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3></div>
-            <div class="w-1/3 text-center px-1"><h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3></div>
+        <!-- STEP NARRATIVO 2: La Composizione -->
+        <div class="scroll-reveal max-w-3xl mx-auto px-6 text-center my-12 md:my-24">
+            <p class="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium">
+                Questa immensa fortuna è composta da immobili, risparmi privati, investimenti finanziari e aziende. <br><br>
+                Ma la cosa più interessante non è capire quanto valga nel complesso, bensì... <strong>come è divisa questa torta?</strong>
+            </p>
         </div>
 
-        <!-- Chart e Testo Issue 1 -->
-        <article class="ui-layer w-full max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-24">
+        <!-- STEP NARRATIVO 3: I 100 Pallini -->
+        <div class="scroll-reveal dots-container flex flex-col md:flex-row items-center justify-center gap-12 max-w-5xl mx-auto my-16 md:my-32 px-6">
+            <div class="md:w-1/2 text-center md:text-left">
+                <h3 class="text-3xl md:text-4xl font-bold mb-6 text-[#1d1d1f] tracking-tight">Mettiamo che ognuno di questi pallini sia una persona...</h3>
+                <p class="text-lg md:text-xl text-[#86868b] leading-relaxed">
+                    Immagina che la popolazione italiana sia formata da sole 100 persone (ognuna rappresenta l'1% demografico). <br><br>
+                    Quanta di quella ricchezza finisce nelle mani di ciascuno di loro?
+                </p>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <!-- Griglia 10x10 popolata via JS -->
+                <div class="grid grid-cols-10 gap-2 md:gap-3 dots-grid bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <!-- I pallini verranno inseriti qui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP NARRATIVO 4: La Simulazione (Canvas esistente) -->
+        <div class="scroll-reveal w-full my-12 md:my-24">
+            <p class="text-center text-[#86868b] mb-4 text-xs md:text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                Muovi il mouse sui pallini per interagire con l'economia
+            </p>
+            
+            <div id="canvas-container" class="h-[40vh] md:h-[50vh] w-full shrink-0 mb-4 md:mb-8 border-y border-gray-100 bg-[#fbfbfd]">
+                <canvas id="vizCanvas"></canvas>
+            </div>
+
+            <!-- Legenda Canvas -->
+            <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
+                <div class="w-1/3 text-center px-1">
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
+                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.</p>
+                </div>
+                <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
+                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.</p>
+                </div>
+                <div class="w-1/3 text-center px-1">
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
+                    <p class="text-[10px] md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Controllano il <strong>60%</strong>. Da soli, possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP NARRATIVO 5: Chart e Conclusione -->
+        <article class="scroll-reveal w-full max-w-3xl mx-auto px-6 md:px-12 pb-24">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">La fotografia di un Paese diviso</h3>
             <div class="w-full bg-white border border-gray-200 p-5 md:p-8 rounded-2xl shadow-sm mb-12 overflow-hidden mt-8">
                 <h4 class="text-xs md:text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%)</h4>
@@ -204,17 +297,16 @@
 
     <!-- ========================================== -->
     <!-- SCHERMATA ARTICOLO 2: INTEGRAZIONE MAPPA   -->
+    <!-- (Mantenuta inalterata)                     -->
     <!-- ========================================== -->
     <div id="article-view-2" class="hidden-view w-full min-h-screen flex-col bg-white">
         
-        <!-- Pulsante Indietro -->
         <div class="ui-layer px-6 pt-8 md:px-12 md:pt-12 max-w-7xl mx-auto w-full">
             <button onclick="closeArticle()" class="text-sm font-bold text-[#86868b] hover:text-[#1d1d1f] flex items-center gap-2 transition-colors uppercase tracking-widest">
                 <span>&larr;</span> Torna alla Home
             </button>
         </div>
 
-        <!-- Header Issue 2 -->
         <header class="ui-layer p-6 md:p-8 md:px-12 pt-6 max-w-4xl mx-auto w-full">
             <h2 class="text-[#86868b] font-semibold tracking-widest uppercase text-xs mb-2">
                 <strong class="text-[#1d1d1f] font-black">UN</strong>BALANCED &mdash; ISSUE 2
@@ -226,21 +318,13 @@
             </p>
         </header>
 
-        <!-- D3 Map Container -->
         <div class="w-full bg-[#fbfbfd] border-y border-gray-200 my-8 py-8 md:py-16 flex justify-center">
-            <!-- Contenitore "max-w-6xl relative" per tenere allineata la mappa e il testo -->
             <div class="w-full max-w-6xl relative px-6 md:px-12 flex flex-col items-center">
-                
-                <!-- Testo descrittivo mappa: statico e sopra la mappa su mobile, di lato con posizione assoluta su desktop -->
                 <div class="w-full md:absolute md:top-0 md:left-6 lg:left-12 md:max-w-[250px] z-10 text-left mb-6 md:mb-0">
                     <h3 class="font-bold text-lg mb-2">Mappa dei Centri</h3>
                     <p class="text-sm text-gray-500">Ogni punto rappresenta un centro di accoglienza, sportello legale o hub di integrazione registrato.</p>
                 </div>
-                
-                <!-- SVG dove D3 disegnerà la mappa -->
                 <svg id="italy-map" class="w-full max-w-3xl h-[50vh] md:h-[70vh]" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid meet"></svg>
-                
-                <!-- Legenda Mappa (modificata per andare a capo dolcemente su mobile) -->
                 <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 mt-6 md:mt-8">
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full bg-[#1d1d1f] opacity-80"></div>
@@ -254,7 +338,6 @@
             </div>
         </div>
 
-        <!-- Corpo dell'articolo Issue 2 -->
         <article class="w-full max-w-3xl mx-auto px-6 md:px-12 py-8 md:py-16">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Un peso mal distribuito</h3>
             <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
@@ -263,7 +346,6 @@
             <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-12">
                 Ma cosa succede nel mezzo? Enormi aree del Centro e del Sud peninsulare appaiono come "deserti dell'integrazione". Questo significa che una persona migrante trasferita in quelle zone ha un accesso quasi nullo a corsi di lingua, supporto psicologico o avviamento al lavoro. Non è integrazione: è semplice parcheggio.
             </p>
-
             <div class="p-6 md:p-8 bg-gray-50 border-l-4 border-[#1d1d1f] rounded-r-xl mb-12">
                 <h4 class="font-bold text-lg mb-2">Il paradosso dei fondi</h4>
                 <p class="text-sm md:text-base text-gray-600">
@@ -278,6 +360,31 @@
     <!-- SCRIPT GLOBALI                             -->
     <!-- ========================================== -->
     <script>
+        // --- INTERSECTION OBSERVER PER SCROLLYTELLING ---
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    
+                    // Se l'elemento rivelato è la griglia dei 100 pallini e non è stata ancora popolata
+                    if(entry.target.classList.contains('dots-container') && !entry.target.dataset.populated) {
+                        entry.target.dataset.populated = 'true';
+                        const grid = entry.target.querySelector('.dots-grid');
+                        grid.innerHTML = ''; // Pulisce
+                        
+                        // Inserisce 100 pallini con un delay progressivo (effetto cascata/pop-up)
+                        for(let i=0; i<100; i++) {
+                            const dot = document.createElement('div');
+                            dot.className = 'w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#d1d1d6] opacity-0 shadow-sm';
+                            dot.style.animation = `popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards ${i * 20}ms`;
+                            grid.appendChild(dot);
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.25 }); // Si attiva quando il 25% dell'elemento è visibile
+
+
         // --- LOGICA DI NAVIGAZIONE SPA ---
         const homeView = document.getElementById('home-view');
         let currentArticleId = null;
@@ -290,6 +397,13 @@
                 article.classList.add('flex');
                 currentArticleId = id;
                 
+                // Inizializza l'Observer per gli elementi di questo articolo
+                article.querySelectorAll('.scroll-reveal').forEach(el => {
+                    el.classList.remove('revealed');
+                    if(el.classList.contains('dots-container')) el.dataset.populated = ''; // Resetta la griglia
+                    scrollObserver.observe(el);
+                });
+
                 // Avvia gli script specifici per ogni issue
                 if(id === 1) {
                     initSimulation();
@@ -297,6 +411,8 @@
                 } else if(id === 2) {
                     initMap();
                 }
+                
+                window.scrollTo(0, 0); // Torna in cima alla pagina
             }
         }
 
@@ -308,9 +424,11 @@
             }
             homeView.classList.remove('hidden-view');
             
-            // Pulisci le animazioni se attive
+            scrollObserver.disconnect(); // Ferma l'observer
             if (animationId) cancelAnimationFrame(animationId);
             currentArticleId = null;
+            
+            window.scrollTo(0, 0);
         }
 
         // ==========================================
@@ -345,38 +463,30 @@
                     .attr("d", path)
                     .attr("class", "map-region");
 
-                // Funzione per verificare se un punto lat/lon è dentro l'Italia
                 function isPointInItaly(point) {
                     return italyGeoJSON.features.some(feature => d3.geoContains(feature, point));
                 }
 
                 const centers = [];
                 
-                // 1. Alta concentrazione al Nord (Piemonte, Lombardia, Veneto, Emilia)
                 let countNord = 0;
                 while(countNord < 80) {
-                    // Genera nel nord indicativo: lon 7-14, lat 43.5-47
                     let pt = [ 7 + Math.random() * 7, 43.5 + Math.random() * 3.5 ];
                     if(isPointInItaly(pt)) { centers.push(pt); countNord++; }
                 }
 
-                // 2. Concentrazione nei punti di sbarco (Sicilia, Calabria Sud)
                 let countSud = 0;
                 while(countSud < 30) {
-                    // Genera sud/isole: lon 12-18, lat 36.5-39.5
                     let pt = [ 12 + Math.random() * 6, 36.5 + Math.random() * 3 ];
                     if(isPointInItaly(pt)) { centers.push(pt); countSud++; }
                 }
 
-                // 3. Pochissimi centri nel Centro-Sud peninsulare (il "deserto")
                 let countCentro = 0;
                 while(countCentro < 15) {
-                    // Genera centro/sud: lon 10-16, lat 39.5-44
                     let pt = [ 10 + Math.random() * 6, 39.5 + Math.random() * 4.5 ];
                     if(isPointInItaly(pt)) { centers.push(pt); countCentro++; }
                 }
 
-                // Aggiungiamo Roma e Milano fissi per realismo, verificando non serva geoContains perché noti
                 centers.push([12.49, 41.90], [12.5, 41.8], [9.19, 45.46], [9.2, 45.5]);
 
                 svg.append("g")
@@ -397,12 +507,6 @@
 
             } catch (error) {
                 console.error("Errore nel caricamento della mappa:", error);
-                svg.append("text")
-                   .attr("x", width/2)
-                   .attr("y", height/2)
-                   .attr("text-anchor", "middle")
-                   .attr("fill", "#86868b")
-                   .text("Errore nel caricamento dei dati geografici.");
             }
         }
 
