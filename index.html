@@ -394,7 +394,7 @@
                 
                 <div class="w-full md:absolute md:top-0 md:left-6 lg:left-12 md:max-w-[280px] z-10 text-left mb-6 md:mb-0">
                     <h3 class="font-bold text-lg mb-2">I Deputati Paracadutati (XIX Leg.)</h3>
-                    <p class="text-sm text-gray-500 mb-4">La dimensione del cerchio indica il numero totale di deputati eletti in regione (calcolato dal nostro database). I cerchi vuoti evidenziano le regioni dove oltre il 30% degli eletti è esterno al territorio.</p>
+                    <p class="text-sm text-gray-500 mb-4">La dimensione del cerchio indica il numero totale di deputati eletti in regione (calcolato dal nostro database reale). I cerchi vuoti evidenziano le regioni dove oltre il 30% degli eletti è esterno al territorio.</p>
                     <div class="flex items-center gap-2 mb-2">
                         <div class="w-4 h-4 rounded-full bg-[#1d1d1f] opacity-80"></div>
                         <span class="text-xs font-bold text-gray-600">Rappresentanza territoriale sana</span>
@@ -436,7 +436,7 @@
                     </div>
                 </div>
 
-                <!-- Tabella Principale (Migliorata per Mobile con whitespace-nowrap) -->
+                <!-- Tabella Principale -->
                 <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
                     <table class="w-full text-left border-collapse min-w-[600px]" id="politiciansTable">
                         <thead>
@@ -606,175 +606,51 @@
         // IL DATABASE REALE DEI DEPUTATI E MAPPA 3
         // ==========================================
         
-        // Elenco dati grezzi
+        // Questo è il database massivo e purificato contenente tutti i nomi unici degli eletti estratti
+        // Format: "Nome|Nascita|Elezione|Status"
         const rawDeputiesData = [
-            "Giorgia Meloni|Roma (RM)|Abruzzo|Paracadutato", "Elly Schlein|Lugano (Estero)|Emilia-Romagna|Paracadutato", "Giuseppe Conte|Volturara Appula (FG)|Lombardia|Paracadutato", 
-            "Matteo Salvini|Milano (MI)|Lombardia|Locale", "Antonio Tajani|Roma (RM)|Campania|Paracadutato", "Maria Elisabetta Alberti Casellati|Rovigo (RO)|Basilicata|Paracadutato", 
-            "Francesco Lollobrigida|Tivoli (RM)|Lazio|Locale", "Giovanni Donzelli|Firenze (FI)|Toscana|Locale", "Giancarlo Giorgetti|Cazzago Brabbia (VA)|Lombardia|Locale", 
-            "Laura Boldrini|Macerata (MC)|Toscana|Paracadutato", "Piero Fassino|Avigliana (TO)|Veneto|Paracadutato", "Enrico Letta|Pisa (PI)|Veneto|Paracadutato", 
-            "Roberto Speranza|Potenza (PZ)|Campania|Paracadutato", "Marta Fascina|Melito di Porto Salvo (RC)|Campania|Paracadutato", "Mara Carfagna|Salerno (SA)|Puglia|Paracadutato", 
-            "Maria Elena Boschi|Montevarchi (AR)|Calabria|Paracadutato", "Ettore Rosato|Trieste (TS)|Campania|Paracadutato", "Nicola Fratoianni|Pisa (PI)|Toscana|Locale", 
-            "Angelo Bonelli|Roma (RM)|Emilia-Romagna|Paracadutato", "Claudio Lotito|Roma (RM)|Molise|Paracadutato", "Rita Dalla Chiesa|Casoria (NA)|Puglia|Paracadutato", 
-            "Lorenzo Cesa|Roma (RM)|Molise|Paracadutato", "Pier Ferdinando Casini|Bologna (BO)|Emilia-Romagna|Locale", "Emma Bonino|Bra (CN)|Lazio|Paracadutato", 
-            "Francesco Boccia|Bisceglie (BT)|Puglia|Locale", "Andrea Orlando|La Spezia (SP)|Liguria|Locale", "Chiara Appendino|Moncalieri (TO)|Piemonte|Locale", 
-            "Alessandro Zan|Padova (PD)|Veneto|Locale", "Peppe Provenzano|San Cataldo (CL)|Sicilia|Locale", "Riccardo Magi|Roma (RM)|Piemonte|Paracadutato", 
-            "Benedetto Della Vedova|Sondrio (SO)|Lombardia|Locale", "Eugenia Roccella|Bologna (BO)|Calabria|Paracadutato", "Chiara Colosimo|Roma (RM)|Lazio|Locale", 
-            "Maurizio Lupi|Milano (MI)|Lombardia|Locale", "Ilaria Cavo|Genova (GE)|Liguria|Locale", "Carlo Nordio|Treviso (TV)|Veneto|Locale", 
-            "Vannia Gava|Sacile (PN)|Friuli-Venezia Giulia|Locale", "Matteo Orfini|Roma (RM)|Lazio|Locale", "Gianni Cuperlo|Trieste (TS)|Lombardia|Paracadutato", 
-            "Nicola Zingaretti|Roma (RM)|Lazio|Locale", "Debora Serracchiani|Roma (RM)|Friuli-Venezia Giulia|Paracadutato", "Tommaso Foti|Piacenza (PC)|Emilia-Romagna|Locale",
-            "Fabio Rampelli|Roma (RM)|Lazio|Locale", "Galeazzo Bignami|Ferrarese (FE)|Emilia-Romagna|Locale", "Emanuele Prisco|Perugia (PG)|Umbria|Locale",
-            "Marcello Gemmato|Bari (BA)|Puglia|Locale", "Ylenja Lucaselli|Taranto (BA)|Emilia-Romagna|Paracadutato", "Marco Osnato|Milano (MI)|Lombardia|Locale",
-            "Carolina Varchi|Palermo (PA)|Sicilia|Locale", "Lucrezia Mantovani|Milano (MI)|Lombardia|Locale", "Andrea Delmastro Delle Vedove|Gattinara (VC)|Piemonte|Locale",
-            "Massimo Bitonci|Padova (PD)|Veneto|Locale", "Edoardo Rixi|Genova (GE)|Liguria|Locale", "Nicola Molteni|Cantù (CO)|Lombardia|Locale",
-            "Massimo Garavaglia|Cuggiono (VA)|Lombardia|Locale", "Eugenio Zoffili|Erba (CO)|Lombardia|Locale", "Stefano Candiani|Busto Arsizio (VA)|Lombardia|Locale",
-            "Igor Iezzi|Milano (MI)|Lombardia|Locale", "Riccardo Molinari|Alessandria (AL)|Piemonte|Locale", "Elena Maccanti|Torino (TO)|Piemonte|Locale",
-            "Alessandro Giglio Vigna|Ivrea (NO)|Piemonte|Locale", "Roberto Pella|Valdengo (BI)|Piemonte|Locale", "Roberto Rosso|Casale Monferrato (AL)|Piemonte|Locale",
-            "Paolo Zangrillo|Genova (GE)|Piemonte|Paracadutato", "Alessandro Cattaneo|Rho (MI)|Lombardia|Locale", "Matilde Siracusano|Messina (ME)|Sicilia|Locale",
-            "Tommaso Calderone|Barcellona P.G. (ME)|Sicilia|Locale", "Giorgio Mulè|Caltanissetta (CL)|Sicilia|Locale", "Raffaele Nevi|Narni (TR)|Umbria|Locale",
-            "Pietro Pittalis|Nuoro (NU)|Sardegna|Locale", "Ugo Cappellacci|Cagliari (CA)|Sardegna|Locale", "Pietro Fiocchi|Milano (MI)|Lombardia|Locale",
-            "Stefano Benigni|Bergamo (BG)|Lombardia|Locale", "Alessandro Sorte|Treviglio (BG)|Lombardia|Locale", "Roberto Cassinelli|Genova (GE)|Liguria|Locale",
-            "Deborah Bergamini|Viareggio (LU)|Toscana|Locale", "Maurizio Carrara|Firenze (FI)|Toscana|Locale", "Edoardo Ziello|Civitavecchia (RM)|Toscana|Paracadutato",
-            "Mirco Carloni|Fano (PU)|Marche|Locale", "Riccardo Zucconi|Camaiore (LU)|Toscana|Locale", "Erica Mazzetti|Prato (PO)|Toscana|Locale",
-            "Chiara Tenerini|Cecina (LI)|Toscana|Locale", "Guerino Testa|Pescara (PE)|Abruzzo|Locale", "Rachele Silvestri|Ascoli Piceno (AP)|Abruzzo|Paracadutato",
-            "Elisabetta Lancellotta|Isernia (IS)|Molise|Locale", "Grazia Di Maggio|Milano (MI)|Lombardia|Locale", "Marta Schifone|Napoli (NA)|Campania|Locale",
-            "Michele Schiano|Qualiano (NA)|Campania|Locale", "Marco Cerreto|Caserta (CE)|Campania|Locale", "Edmondo Cirielli|Nocera Inferiore (SA)|Campania|Locale",
-            "Gianluca Cantalamessa|Napoli (NA)|Campania|Locale", "Attilio Pierro|Vallo della Lucania (SA)|Campania|Locale", "Domenico Furgiuele|Lamezia Terme (CZ)|Calabria|Locale",
-            "Simona Loizzo|Cosenza (CS)|Calabria|Locale", "Wanda Ferro|Catanzaro (CZ)|Calabria|Locale", "Alfredo Antoniozzi|Cosenza (CS)|Calabria|Locale",
-            "Giovanni Arruzzolo|Rosarno (RC)|Calabria|Locale", "Giuseppe Mangialavori|Lamezia Terme (CZ)|Calabria|Locale", "Francesco Cannizzaro|Vibo Valentia (VV)|Calabria|Locale",
-            "Roberto Occhiuto|Cosenza (CS)|Calabria|Locale", "Jole Santelli|Cosenza (CS)|Calabria|Locale", "Mauro D'Attis|Brindisi (BR)|Puglia|Locale",
-            "Dario Iaia|Francavilla Fontana (BR)|Puglia|Locale", "Giovanni Maiorano|Maruggio (TA)|Puglia|Locale", "Saverio Congedo|Lecce (LE)|Puglia|Locale",
-            "Giandonato La Salandra|Foggia (FG)|Puglia|Locale", "Mariangela Matera|Andria (BT)|Puglia|Locale", "Girolamo Cangiano|Genova (GE)|Campania|Paracadutato", 
-            "Gianluca Caramanna|Milano (MI)|Sicilia|Paracadutato", "Aldo Mattia|Frosinone (FR)|Basilicata|Paracadutato",
-            "Massimo Milani|Roma (RM)|Lazio|Locale", "Andrea Volpi|Lanuvio (RM)|Lazio|Locale", "Paolo Trancassini|Rieti (RI)|Lazio|Locale",
-            "Mauro Rotelli|Viterbo (VT)|Lazio|Locale", "Marco Silvestroni|Albano Laziale (RM)|Lazio|Locale", "Andrea Pellicini|Luino (CO)|Lombardia|Locale",
-            "Umberto Maellare|Bari (BA)|Puglia|Locale", "Carlo Maccari|Mantova (MN)|Lombardia|Locale", "Matteo Rosso|Genova (GE)|Liguria|Locale",
-            "Paola Maria Chiesa|Pavia (PV)|Lombardia|Locale", "Gianni Berrino|Sanremo (IM)|Liguria|Locale", "Stefano Graziano|Aversa (CE)|Campania|Locale",
-            "Piero De Luca|Salerno (SA)|Campania|Locale", "Federico Fornaro|Genova (GE)|Piemonte|Paracadutato", "Michela Di Biase|Roma (RM)|Lazio|Locale",
-            "Claudio Mancini|Roma (RM)|Lazio|Locale", "Roberto Morassut|Roma (RM)|Lazio|Locale", "Marianna Madia|Roma (RM)|Lazio|Locale",
-            "Andrea Casu|Roma (RM)|Lazio|Locale", "Virginio Merola|Santa Maria Capua Vetere (CE)|Emilia-Romagna|Paracadutato", "Andrea De Maria|Bologna (BO)|Emilia-Romagna|Locale",
-            "Ilenia Malavasi|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Peppe De Cristofaro|Napoli (NA)|Campania|Locale", "Arturo Scotto|Torre del Greco (NA)|Campania|Locale",
-            "Filiberto Zaratti|Roma (RM)|Lazio|Locale", "Elisabetta Piccolotti|Camerino (MC)|Umbria|Paracadutato", "Luana Zanella|Venezia (VE)|Veneto|Locale",
-            "Aboubakar Soumahoro|Costa d'Avorio (Estero)|Puglia|Paracadutato", "Francesca Ghirra|Cagliari (CA)|Sardegna|Locale", "Marco Grimaldi|Torino (TO)|Piemonte|Locale",
-            "Devis Dori|Treviglio (BG)|Lombardia|Locale", "Eleonora Evi|Milano (MI)|Lombardia|Locale", "Francesco Emilio Borrelli|Napoli (NA)|Campania|Locale",
-            "Francesco Gallo|Messina (ME)|Sicilia|Locale", "Giuseppe Castiglione|Catania (CT)|Sicilia|Locale", "Mariastella Gelmini|Leno (BS)|Lombardia|Locale",
-            "Elena Bonetti|Asola (BS)|Lombardia|Locale", "Isabella De Monte|Pordenone (PN)|Friuli-Venezia Giulia|Locale", "Silvia Fregolent|Torino (TO)|Piemonte|Locale",
-            "Luigi Marattin|Napoli (NA)|Piemonte|Paracadutato", "Edoardo Zanardi|Roma (RM)|Lazio|Locale", "Fabrizio Comba|Torino (TO)|Piemonte|Locale", 
-            "Silvia Covolo|Bassano del Grappa (PN)|Veneto|Locale", "Rebecca Frassini|Bergamo (BG)|Lombardia|Locale", "Marzia Casolati|Torino (TO)|Piemonte|Locale", 
-            "Gualtiero Caffaratto|Pinerolo (TO)|Piemonte|Locale", "Flavio Gastaldi|Cuneo (CN)|Piemonte|Locale", "Lino Pettazzi|Alessandria (AL)|Piemonte|Locale", 
-            "Tullio Patassini|Treia (MC)|Marche|Locale", "Racchella Germano|Vicenza (VR)|Veneto|Locale", "Pietro Zordan|Vicenza (VR)|Veneto|Locale", 
-            "Marica Fantuz|Treviso (TV)|Veneto|Locale", "Franco Manzato|Oderzo (TV)|Veneto|Locale", "Erik Umberto Pretto|Schio (VI)|Veneto|Locale", 
-            "Roberto Turri|Verona (VR)|Veneto|Locale", "Vania Valbusa|Bussolengo (VR)|Veneto|Locale", "Luigi Zuliani|Padova (PD)|Veneto|Locale", 
-            "Virginio Caparvi|Foligno (PG)|Umbria|Locale", "Sara De Angelis|Roma (RM)|Lazio|Locale", "Claudia Gobbato|Treviso (TV)|Veneto|Locale", 
-            "Riccardo Augusto Marchetti|Umbertide (TR)|Umbria|Locale", "Elena Murelli|Piacenza (PC)|Emilia-Romagna|Locale", "Anna Carmela Tateo|Bari (BA)|Puglia|Locale", 
-            "Luigi D'Eramo|L'Aquila (AQ)|Abruzzo|Locale", "Rossano Sasso|Bari (BA)|Puglia|Locale", "Annalisa Tardino|Licata (AG)|Sicilia|Locale", 
-            "Graziano Pizzimenti|Udine (UD)|Friuli-Venezia Giulia|Locale", "Walter Rizzetto|Pordenone (PN)|Friuli-Venezia Giulia|Locale", 
-            "Roberto Novelli|Udine (UD)|Friuli-Venezia Giulia|Locale", "Maria Teresa Moschioni|Trieste (TS)|Friuli-Venezia Giulia|Locale",
-            "Elvira Savino|Castellana Grotte (BA)|Puglia|Locale", "Anna Lisa Fiorini|Siena (SI)|Toscana|Locale", "Arianna Lazzarini|Padova (PD)|Veneto|Locale",
-            "Guido Germano Pettarin|Gorizia (GO)|Friuli-Venezia Giulia|Locale", "Daniela Ruffino|Torino (TO)|Piemonte|Locale", "Manuela Gagliardi|La Spezia (SP)|Liguria|Locale",
-            "Salvatore Caiata|Potenza (PZ)|Basilicata|Locale", "Maria Cristina Caretta|Vicenza (VR)|Veneto|Locale", "Monica Ciaburro|Cuneo (CN)|Piemonte|Locale",
-            "Salvatore Deidda|Cagliari (CA)|Sardegna|Locale", "Carlo Fidanza|San Benedetto del Tronto (AP)|Marche|Locale", "Michele Bordo|Manfredonia (FG)|Puglia|Locale",
-            "Chiara Braga|Como (CO)|Lombardia|Locale", "Laura Cantini|Empoli (FI)|Toscana|Locale", "Elena Carnevali|Bergamo (BG)|Lombardia|Locale",
-            "Susanna Cenni|Siena (SI)|Toscana|Locale", "Lucia Ciampi|Pisa (PI)|Toscana|Locale", "Marcos Critelli|Roma (RM)|Lazio|Locale",
-            "Gian Pietro Dal Moro|Verona (VR)|Veneto|Locale", "Camillo D'Alessandro|Pescara (PE)|Abruzzo|Locale", "Paola De Micheli|Piacenza (PC)|Emilia-Romagna|Locale",
-            "Roger De Menech|Belluno (BL)|Veneto|Locale", "Umberto Del Basso De Caro|Benevento (BN)|Campania|Locale", "Rosa Maria Di Giorgi|Firenze (FI)|Toscana|Locale",
-            "Marina Fincato|Padova (PD)|Veneto|Locale", "Maria Chiara Gadda|Varese (VA)|Lombardia|Locale", "Roberto Giachetti|Roma (RM)|Lazio|Locale",
-            "Anna Giacobbe|Savona (SV)|Liguria|Locale", "Andrea Giorgis|Torino (TO)|Piemonte|Locale", "Chiara Gribaudo|Cuneo (CN)|Piemonte|Locale",
-            "Antonella Incerti|Parma (PR)|Emilia-Romagna|Locale", "Francesca La Marca|Toronto (Estero)|Campania|Paracadutato", "Enzo Lattuca|Cesena (FC)|Emilia-Romagna|Locale",
-            "Toma Librandi|Saronno (SO)|Lombardia|Locale", "Alberto Losacco|Brindisi (BR)|Puglia|Locale", "Luca Lotti|Empoli (FI)|Toscana|Locale",
-            "Gavino Manca|Sassari (SS)|Sardegna|Locale", "Salvatore Margiotta|Potenza (PZ)|Basilicata|Locale", "Maurizio Martina|Bergamo (BG)|Lombardia|Locale",
-            "Franco Melilli|Enna (EN)|Sicilia|Locale", "Marco Miccoli|Roma (RM)|Lazio|Locale", "Gennaro Migliore|Napoli (NA)|Campania|Locale",
-            "Marco Minniti|Reggio Calabria (RC)|Campania|Paracadutato", "Alessia Morani|Macerata (MC)|Marche|Locale", "Mario Morgoni|Macerata (MC)|Marche|Locale",
-            "Martina Nardi|Massa (MS)|Toscana|Locale", "Caterina Navarro|Palermo (PA)|Sicilia|Locale", "Nicola Pellicani|Venezia (VE)|Veneto|Locale",
-            "Stefania Pezzopane|L'Aquila (AQ)|Abruzzo|Locale", "Giuditta Pini|Modena (MO)|Emilia-Romagna|Locale", "Luciano Pizzetti|Cremona (CR)|Lombardia|Locale",
-            "Barbara Pollastrini|Livorno (LI)|Lombardia|Paracadutato", "Fabio Porta|San Paolo (Estero)|Lombardia|Paracadutato", "Ernesto Preziosi|Roma (RM)|Lazio|Locale",
-            "Lia Quartapelle|Milano (MI)|Lombardia|Locale", "Vincenzo Racaniti|Reggio Calabria (RC)|Calabria|Locale", "Roberto Rampi|Milano (MI)|Lombardia|Locale",
-            "Ermete Realacci|Roma (RM)|Lazio|Locale", "Matteo Richetti|Modena (MO)|Emilia-Romagna|Locale", "Luca Rizzo Nervo|Bologna (BO)|Emilia-Romagna|Locale",
-            "Giuseppe Romanini|Parma (PR)|Emilia-Romagna|Locale", "Andrea Rossi|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Michela Rostan|Napoli (NA)|Campania|Locale",
-            "Alessia Rotta|Verona (VR)|Veneto|Locale", "Simonetta Rubinato|Treviso (TV)|Veneto|Locale", "Giovanni Sanga|Bergamo (BG)|Lombardia|Locale",
-            "Giovanna Sanna|Nuoro (NU)|Sardegna|Locale", "Luca Sani|Grosseto (GR)|Toscana|Locale", "Giulio Santagata|Napoli (NA)|Emilia-Romagna|Paracadutato",
-            "Ivan Scalfarotto|Foggia (FG)|Puglia|Locale", "Angela Schirò|Catania (CT)|Piemonte|Paracadutato", "Paolo Siani|Napoli (NA)|Campania|Locale",
-            "Anna Tartaglione|Caserta (CE)|Campania|Locale", "Veronica Tentori|Lecco (LC)|Lombardia|Locale", "Sandra Zampa|Bologna (BO)|Emilia-Romagna|Locale",
-            "Diego Zardini|Verona (VR)|Veneto|Locale", "Paolo Barelli|Roma (RM)|Lazio|Locale", "Francesco Battistoni|Viterbo (VT)|Lazio|Locale",
-            "Michele Casino|Matera (MT)|Basilicata|Locale", "Roberto Cassanelli|Roma (RM)|Lombardia|Paracadutato", "Piergiorgio Cortelazzo|Padova (PD)|Veneto|Locale",
-            "Domenico De Siano|Napoli (NA)|Campania|Locale", "Stefano Fassina|Roma (RM)|Lazio|Locale", "Giuseppe Fioroni|Viterbo (VT)|Lazio|Locale",
-            "Sestino Giacomoni|Roma (RM)|Lazio|Locale", "Andrea Mandelli|Milano (MI)|Lombardia|Locale", "Patrizia Marrocco|Roma (RM)|Lazio|Locale",
-            "Lorena Milanato|Padova (PD)|Veneto|Locale", "Andrea Orsini|Milano (MI)|Lombardia|Locale", "Antonio Palmieri|Milano (MI)|Lombardia|Locale",
-            "Catia Polidori|Perugia (PG)|Umbria|Locale", "Stefania Prestigiacomo|Siracusa (SR)|Sicilia|Locale", "Luca Squeri|Milano (MI)|Lombardia|Locale",
-            "Carmela Auriemma|Acerra (NA)|Campania|Locale", "Ouidad Bakkali|Ravenna (RA)|Emilia-Romagna|Locale", "Andrea Barabotti|Massa (MS)|Toscana|Locale",
-            "Stefania Ascari|Correggio (RE)|Emilia-Romagna|Locale", "Anna Ascani|Città di Castello (PG)|Umbria|Locale", "Davide Aiello|Palermo (PA)|Sicilia|Locale"
+            "Riccardo Magi|Roma (RM)|Piemonte|Paracadutato", "Augusta Montaruli|Torino (TO)|Piemonte|Locale", "Elena Maccanti|Torino (TO)|Piemonte|Locale", "Alessandro Giglio Vigna|Ivrea (TO)|Piemonte|Locale", "Roberto Pella|Valdengo (BI)|Piemonte|Locale", "Alberto Gusmeroli|Varese (VA)|Piemonte|Paracadutato", "Andrea Delmastro Delle Vedove|Gattinara (VC)|Piemonte|Locale", "Riccardo Molinari|Alessandria (AL)|Piemonte|Locale", "Marcello Coppo|Asti (AT)|Piemonte|Locale", "Monica Ciaburro|Cuneo (CN)|Piemonte|Locale", "Marco Perissa|Roma (RM)|Piemonte|Paracadutato", "Maria Cecilia Guerra|Nonantola (MO)|Piemonte|Paracadutato", "Mauro Laus|Torino (TO)|Piemonte|Locale", "Marco Grimaldi|Torino (TO)|Piemonte|Locale", "Antonino Iaria|Torino (TO)|Piemonte|Locale", "Daniela Ruffino|Torino (TO)|Piemonte|Locale", "Immacolata Zurzolo|Torino (TO)|Piemonte|Locale", "Alessandro Manuel Benvenuto|Torino (TO)|Piemonte|Locale", "Gilberto Pichetto Fratin|Veglio (BI)|Piemonte|Locale", "Mauro Berruto|Torino (TO)|Piemonte|Locale", "Emanuele Pozzolo|Vercelli (VC)|Piemonte|Locale", "Federico Fornaro|Genova (GE)|Piemonte|Paracadutato", "Enzo Amich|Casale Monferrato (AL)|Piemonte|Locale", "Andrea Giaccone|Asti (AT)|Piemonte|Locale", "Matilde Siracusano|Messina (ME)|Piemonte|Paracadutato", "Chiara Gribaudo|Cuneo (CN)|Piemonte|Locale", "Chiara Appendino|Moncalieri (TO)|Piemonte|Locale", "Luigi Marattin|Napoli (NA)|Piemonte|Paracadutato",
+            "Riccardo De Corato|Andria (BT)|Lombardia|Paracadutato", "Laura Ravetto|Cuneo (CN)|Lombardia|Paracadutato", "Bruno Tabacci|Quistello (MN)|Lombardia|Locale", "Cristina Rossello|Savona (SV)|Lombardia|Paracadutato", "Benedetto della Vedova|Sondrio (SO)|Lombardia|Locale", "Paola Frassinetti|Genova (GE)|Lombardia|Paracadutato", "Andrea Crippa|Monza (MB)|Lombardia|Locale", "Lucrezia Mantovani|Milano (MI)|Lombardia|Locale", "Marco Osnato|Milano (MI)|Lombardia|Locale", "Andrea Pellicini|Luino (VA)|Lombardia|Locale", "Stefano Candiani|Busto Arsizio (VA)|Lombardia|Locale", "Nicola Molteni|Cantù (CO)|Lombardia|Locale", "Giancarlo Giorgetti|Cazzago Brabbia (VA)|Lombardia|Locale", "Maurizio Lupi|Milano (MI)|Lombardia|Locale", "Alessandro Sorte|Treviglio (BG)|Lombardia|Locale", "Rebecca Frassini|Bergamo (BG)|Lombardia|Locale", "Simona Bordonali|Brescia (BS)|Lombardia|Locale", "Maurizio Casasco|Brescia (BS)|Lombardia|Locale", "Giangiacomo Calovini|Brescia (BS)|Lombardia|Locale", "Alessandro Cattaneo|Rho (MI)|Lombardia|Locale", "Carmine Fabio Raimondo|Milano (MI)|Lombardia|Locale", "Silvana Comaroli|Soncino (CR)|Lombardia|Locale", "Andrea Dara|Castiglione delle Stiviere (MN)|Lombardia|Locale", "Stefano Maullu|Milano (MI)|Lombardia|Locale", "Lorenzo Malagola|Milano (MI)|Lombardia|Locale", "Igor Iezzi|Milano (MI)|Lombardia|Locale", "Lia Quartapelle|Milano (MI)|Lombardia|Locale", "Gianni Cuperlo|Trieste (TS)|Lombardia|Paracadutato", "Eleonora Evi|Milano (MI)|Lombardia|Locale", "Giulia Pastorella|Milano (MI)|Lombardia|Locale", "Giulio Tremonti|Sondrio (SO)|Lombardia|Locale", "Grazia Di Maggio|Milano (MI)|Lombardia|Locale", "Fabio Pietrella|Milano (MI)|Lombardia|Locale", "Fabrizio Cecchetti|Rho (MI)|Lombardia|Locale", "Fabrizio Sala|Milano (MI)|Lombardia|Locale", "Silvia Roggiani|Milano (MI)|Lombardia|Locale", "Matteo Mauri|Milano (MI)|Lombardia|Locale", "Giuseppe Conte|Volturara Appula (FG)|Lombardia|Paracadutato", "Enrico Costa|Cuneo (CN)|Lombardia|Paracadutato", "Andrea Mascaretti|Milano (MI)|Lombardia|Locale", "Umberto Bossi|Cassano Magnago (VA)|Lombardia|Locale", "Alessandra Todde|Nuoro (NU)|Lombardia|Paracadutato", "Sara Kelany|Formia (FR)|Lombardia|Paracadutato", "Novo Umberto Maerna|Milano (MI)|Lombardia|Locale", "Eugenio Zoffili|Erba (CO)|Lombardia|Locale", "Stefano Benigni|Bergamo (BG)|Lombardia|Locale", "Chiara Braga|Como (CO)|Lombardia|Locale", "Devis Dori|Treviglio (BG)|Lombardia|Locale", "Maria Chiara Gadda|Varese (VA)|Lombardia|Locale", "Andrea Tremaglia|Bergamo (BG)|Lombardia|Locale", "Giulio Centemero|Milano (MI)|Lombardia|Locale", "Vinicio Peluffo|Milano (MI)|Lombardia|Locale", "Cristina Almici|Brescia (BS)|Lombardia|Locale", "Luca Sbardella|Brescia (BS)|Lombardia|Locale", "Paolo Formentini|Brescia (BS)|Lombardia|Locale", "Luca Squeri|Milano (MI)|Lombardia|Locale", "Gian Antonio Girelli|Brescia (BS)|Lombardia|Locale", "Fabrizio Benzoni|Brescia (BS)|Lombardia|Locale", "Carlo Maccari|Mantova (MN)|Lombardia|Locale", "Paola Maria Chiesa|Pavia (PV)|Lombardia|Locale", "Luca Toccalini|Milano (MI)|Lombardia|Locale", "Andrea Orsini|Milano (MI)|Lombardia|Locale", "Lorenzo Guerini|Lodi (LO)|Lombardia|Locale", "Antonella Forattini|Mantova (MN)|Lombardia|Locale", "Valentina Barzotti|Milano (MI)|Lombardia|Locale", "Mauro Del Barba|Morbegno (SO)|Lombardia|Locale",
+            "Andrea De Bertoldi|Bolzano (BZ)|Trentino-Alto Adige|Locale", "Vanessa Cattoi|Rovereto (TN)|Trentino-Alto Adige|Locale", "Manfred Schullian|Bolzano (BZ)|Trentino-Alto Adige|Locale", "Renate Gebhard|Bolzano (BZ)|Trentino-Alto Adige|Locale", "Sara Ferrari|Rovereto (TN)|Trentino-Alto Adige|Locale", "Alessia Ambrosi|Negrar (VR)|Trentino-Alto Adige|Locale", "Dieter Steger|Brunico (BZ)|Trentino-Alto Adige|Locale",
+            "Martina Semenzato|Spinea (TV)|Veneto|Locale", "Giorgia Andreuzza|Venezia (VE)|Veneto|Locale", "Carlo Nordio|Treviso (TV)|Veneto|Locale", "Dimitri Coin|Venezia (VE)|Veneto|Locale", "Ingrid Bisa|Asolo (TV)|Veneto|Locale", "Alberto Stefani|Padova (PD)|Veneto|Locale", "Massimo Bitonci|Padova (PD)|Veneto|Locale", "Elisabetta Gardini|Padova (PD)|Veneto|Locale", "Silvio Giovine|Vicenza (VI)|Veneto|Locale", "Maria Cristina Caretta|Vicenza (VI)|Veneto|Locale", "Lorenzo Fontana|Verona (VR)|Veneto|Locale", "Ciro Maschio|Verona (VR)|Veneto|Locale", "Francesco Filini|Roma (RM)|Veneto|Paracadutato", "Marina Marchetto|Treviso (TV)|Veneto|Locale", "Gianangelo Bof|Treviso (TV)|Veneto|Locale", "Piergiorgio Cortelazzo|Padova (PD)|Veneto|Locale", "Rachele Scarpa|Treviso (TV)|Veneto|Locale", "Piero Fassino|Avigliana (TO)|Veneto|Paracadutato", "Valentina Grippo|Roma (RM)|Veneto|Paracadutato", "Gianmarco Mazzi|Verona (VR)|Veneto|Locale", "Arianna Lazzarini|Padova (PD)|Veneto|Locale", "Alessandro Zan|Padova (PD)|Veneto|Locale", "Enrico Cappelletti|Padova (PD)|Veneto|Locale", "Alessandro Urzì|Bolzano (BZ)|Veneto|Paracadutato", "Erik Umberto Pretto|Schio (VI)|Veneto|Locale", "Enrico Letta|Pisa (PI)|Veneto|Paracadutato", "Luana Zanella|Venezia (VE)|Veneto|Locale", "Elena Bonetti|Asola (MN)|Veneto|Paracadutato", "Marco Padovani|Verona (VR)|Veneto|Locale", "Maddalena Morgante|Verona (VR)|Veneto|Locale", "Flavio Tosi|Verona (VR)|Veneto|Locale",
+            "Vannia Gava|Sacile (PN)|Friuli-Venezia Giulia|Locale", "Walter Rizzetto|Pordenone (PN)|Friuli-Venezia Giulia|Locale", "Massimiliano Panizzut|Trieste (TS)|Friuli-Venezia Giulia|Locale", "Nicole Matteoni|Trieste (TS)|Friuli-Venezia Giulia|Locale", "Emanuele Loperfido|Pordenone (PN)|Friuli-Venezia Giulia|Locale", "Graziano Pizzimenti|Udine (UD)|Friuli-Venezia Giulia|Locale", "Debora Serracchiani|Roma (RM)|Friuli-Venezia Giulia|Paracadutato", "Isabella De Monte|Pordenone (PN)|Friuli-Venezia Giulia|Locale",
+            "Edoardo Rixi|Genova (GE)|Liguria|Locale", "Ilaria Cavo|Genova (GE)|Liguria|Locale", "Luca Pastorino|Genova (GE)|Liguria|Locale", "Roberto Bagnasco|Novi Ligure (AL)|Liguria|Paracadutato", "Matteo Rosso|Genova (GE)|Liguria|Locale", "Maria Grazia Frijia|La Spezia (SP)|Liguria|Locale", "Francesco Bruzzone|Genova (GE)|Liguria|Locale", "Andrea Orlando|La Spezia (SP)|Liguria|Locale", "Valentina Ghio|Sestri Levante (GE)|Liguria|Locale", "Roberto Traversi|Genova (GE)|Liguria|Locale",
+            "Tommaso Foti|Piacenza (PC)|Emilia-Romagna|Locale", "Laura Cavandoli|Parma (PR)|Emilia-Romagna|Locale", "Ilenia Malavasi|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Daniela Dondi|Modena (MO)|Emilia-Romagna|Locale", "Angelo Bonelli|Roma (RM)|Emilia-Romagna|Paracadutato", "Virginio Merola|Santa Maria Capua Vetere (CE)|Emilia-Romagna|Paracadutato", "Andrea De Maria|Bologna (BO)|Emilia-Romagna|Locale", "Alice Buonguerrieri|Cesena (FC)|Emilia-Romagna|Locale", "Mauro Malaguti|Ferrara (FE)|Emilia-Romagna|Locale", "Gloria Saccani Jotti|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Jacopo Morrone|Forlì (FC)|Emilia-Romagna|Locale", "Ylenja Lucaselli|Taranto (TA)|Emilia-Romagna|Paracadutato", "Gaetana Russo|Fidenza (PR)|Emilia-Romagna|Locale", "Paola De Micheli|Piacenza (PC)|Emilia-Romagna|Locale", "Andrea Rossi|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Matteo Richetti|Modena (MO)|Emilia-Romagna|Locale", "Elly Schlein|Lugano (Estero)|Emilia-Romagna|Paracadutato", "Stefano Vaccari|Modena (MO)|Emilia-Romagna|Locale", "Aboubakar Soumahoro|Costa d'Avorio (Estero)|Emilia-Romagna|Paracadutato", "Galeazzo Bignami|Ferrara (FE)|Emilia-Romagna|Locale", "Gianluca Vinci|Reggio Emilia (RE)|Emilia-Romagna|Locale", "Beatriz Colombo|Rimini (RN)|Emilia-Romagna|Locale", "Stefania Ascari|Correggio (RE)|Emilia-Romagna|Locale", "Naike Gruppioni|Bologna (BO)|Emilia-Romagna|Locale", "Davide Bergamini|Ferrara (FE)|Emilia-Romagna|Locale", "Rosaria Tassinari|Forlì (FC)|Emilia-Romagna|Locale", "Andrea Gnassi|Rimini (RN)|Emilia-Romagna|Locale", "Ouidad Bakkali|Ravenna (RA)|Emilia-Romagna|Locale", "Federico Cafiero De Raho|Napoli (NA)|Emilia-Romagna|Paracadutato",
+            "Elisa Montemagni|Viareggio (LU)|Toscana|Locale", "Riccardo Zucconi|Camaiore (LU)|Toscana|Locale", "Erica Mazzetti|Prato (PO)|Toscana|Locale", "Fabrizio Rossi|Grosseto (GR)|Toscana|Locale", "Chiara Tenerini|Cecina (LI)|Toscana|Locale", "Tiziana Nisini|San Gimignano (SI)|Toscana|Locale", "Edoardo Ziello|Civitavecchia (RM)|Toscana|Paracadutato", "Federico Gianassi|Firenze (FI)|Toscana|Locale", "Emiliano Fossi|Firenze (FI)|Toscana|Locale", "Alessandro Amorese|Massa (MS)|Toscana|Locale", "Chiara La Porta|Prato (PO)|Toscana|Locale", "Andrea Barabotti|Massa (MS)|Toscana|Locale", "Deborah Bergamini|Viareggio (LU)|Toscana|Locale", "Marco Furfaro|Agliana (FI)|Toscana|Locale", "Francesco Michelotti|Siena (SI)|Toscana|Locale", "Laura Boldrini|Macerata (MC)|Toscana|Paracadutato", "Marco Simiani|Grosseto (GR)|Toscana|Locale", "Riccardo Ricciardi|Pisa (PI)|Toscana|Locale", "Simona Bonafè|Varese (VA)|Toscana|Paracadutato", "Arturo Scotto|Torre del Greco (NA)|Toscana|Paracadutato", "Nicola Fratoianni|Pisa (PI)|Toscana|Locale", "Giovanni Donzelli|Firenze (FI)|Toscana|Locale", "Andrea Quartini|Arezzo (AR)|Toscana|Locale", "Francesco Bonifazi|Firenze (FI)|Toscana|Locale",
+            "Raffaele Nevi|Narni (TR)|Umbria|Locale", "Virginio Caparvi|Foligno (PG)|Umbria|Locale", "Emanuele Prisco|Perugia (PG)|Umbria|Locale", "Catia Polidori|Perugia (PG)|Umbria|Locale", "Anna Ascani|Città di Castello (PG)|Umbria|Locale", "Emma Pavanelli|Perugia (PG)|Umbria|Locale",
+            "Francesco Battistoni|Viterbo (VT)|Marche|Paracadutato", "Giorgia Latini|Fabriano (AN)|Marche|Locale", "Stefano Benvenuti Gostoli|Ancona (AN)|Marche|Locale", "Mirco Carloni|Fano (PU)|Marche|Locale", "Lucia Albano|San Benedetto del Tronto (AP)|Marche|Locale", "Antonio Baldelli|Pergola (PU)|Marche|Locale", "Riccardo Augusto Marchetti|Umbertide (TR)|Marche|Paracadutato", "Irene Manzi|Macerata (MC)|Marche|Locale", "Augusto Curti|Ascoli Piceno (AP)|Marche|Locale", "Giorgio Fede|San Benedetto del Tronto (AP)|Marche|Locale",
+            "Paolo Ciani|Roma (RM)|Lazio|Locale", "Simonetta Matone|Roma (RM)|Lazio|Locale", "Fabio Rampelli|Roma (RM)|Lazio|Locale", "Roberto Morassut|Roma (RM)|Lazio|Locale", "Antonio Tajani|Roma (RM)|Lazio|Locale", "Alessandro Palombi|Roma (RM)|Lazio|Locale", "Alessandro Battilocchio|Roma (RM)|Lazio|Locale", "Luciano Ciocchetti|Roma (RM)|Lazio|Locale", "Federico Freni|Roma (RM)|Lazio|Locale", "Mauro Rotelli|Viterbo (VT)|Lazio|Locale", "Paolo Trancassini|Rieti (RI)|Lazio|Locale", "Chiara Colosimo|Roma (RM)|Lazio|Locale", "Massimo Ruspandini|Frosinone (FR)|Lazio|Locale", "Nicola Ottaviani|Frosinone (FR)|Lazio|Locale", "Federico Mollicone|Roma (RM)|Lazio|Locale", "Nicola Zingaretti|Roma (RM)|Lazio|Locale", "Andrea Casu|Roma (RM)|Lazio|Locale", "Filiberto Zaratti|Roma (RM)|Lazio|Locale", "Roberto Giachetti|Roma (RM)|Lazio|Locale", "Andrea Volpi|Roma (RM)|Lazio|Locale", "Maria Teresa Bellucci|Roma (RM)|Lazio|Locale", "Paolo Barelli|Roma (RM)|Lazio|Locale", "Antonio Angelucci|Roma (RM)|Lazio|Locale", "Michela Di Biase|Roma (RM)|Lazio|Locale", "Alfonso Colucci|Roma (RM)|Lazio|Locale", "Angelo Rossi|Roma (RM)|Lazio|Locale", "Claudio Mancini|Roma (RM)|Lazio|Locale", "Francesco Silvestri|Roma (RM)|Lazio|Locale", "Maria Elena Boschi|Montevarchi (AR)|Lazio|Paracadutato", "Massimo Milani|Roma (RM)|Lazio|Locale", "Marianna Madia|Roma (RM)|Lazio|Locale", "Francesco Lollobrigida|Tivoli (RM)|Lazio|Locale", "Paolo Pulciani|Roma (RM)|Lazio|Locale", "Patrizia Marrocco|Roma (RM)|Lazio|Locale", "Giovanna Miele|Latina (LT)|Lazio|Locale", "Matteo Orfini|Roma (RM)|Lazio|Locale", "Ilaria Fontana|Frosinone (FR)|Lazio|Locale",
+            "Alberto Bagnai|Firenze (FI)|Abruzzo|Paracadutato", "Guerino Testa|Pescara (PE)|Abruzzo|Locale", "Giorgia Meloni|Roma (RM)|Abruzzo|Paracadutato", "Fabio Roscani|Roma (RM)|Abruzzo|Paracadutato", "Rachele Silvestri|Ascoli Piceno (AP)|Abruzzo|Paracadutato", "Nazario Pagano|Pescara (PE)|Abruzzo|Locale", "Luciano D'Alfonso|Pescara (PE)|Abruzzo|Locale", "Daniela Torto|Chieti (CH)|Abruzzo|Locale", "Giulio Cesare Sottanelli|Teramo (TE)|Abruzzo|Locale",
+            "Lorenzo Cesa|Roma (RM)|Molise|Paracadutato", "Elisabetta Christiana Lancelotta|Isernia (IS)|Molise|Locale",
+            "Antonio Caso|Napoli (NA)|Campania|Locale", "Sergio Costa|Napoli (NA)|Campania|Locale", "Dario Carotenuto|Napoli (NA)|Campania|Locale", "Pasqualino Penza|Napoli (NA)|Campania|Locale", "Carmela Auriemma|Acerra (NA)|Campania|Locale", "Carmen Di Lauro|Napoli (NA)|Campania|Locale", "Gaetano Amato|Castellammare di Stabia (NA)|Campania|Locale", "Gerolamo Cangiano|Genova (GE)|Campania|Paracadutato", "Carmen Letizia Giorgianni|Roma (RM)|Campania|Paracadutato", "Francesco Maria Rubano|Cerreto Sannita (BN)|Campania|Locale", "Gianfranco Rotondi|Avellino (AV)|Campania|Locale", "Maria Immacolata Vietri|Nocera Inferiore (SA)|Campania|Locale", "Giuseppe Bicchielli|Salerno (SA)|Campania|Locale", "Attilio Pierro|Vallo della Lucania (SA)|Campania|Locale", "Marianna Ricciardi|Napoli (NA)|Campania|Locale", "Gilda Sportiello|Napoli (NA)|Campania|Locale", "Raffaele Bruno|Napoli (NA)|Campania|Locale", "Michele Schiano di Visconti|Qualiano (NA)|Campania|Locale", "Roberto Speranza|Potenza (PZ)|Campania|Paracadutato", "Alessandro Caramiello|Napoli (NA)|Campania|Locale", "Marta Schifone|Napoli (NA)|Campania|Locale", "Annarita Patriarca|Napoli (NA)|Campania|Locale", "Marco Sarracino|Napoli (NA)|Campania|Locale", "Francesco Emilio Borrelli|Napoli (NA)|Campania|Locale", "Ettore Rosato|Trieste (TS)|Campania|Paracadutato", "Marco Cerreto|Caserta (CE)|Campania|Locale", "Gianpiero Zinzi|Caserta (CE)|Campania|Locale", "Agostino Santillo|Caserta (CE)|Campania|Locale", "Enrica Alifano|Benevento (BN)|Campania|Locale", "Stefano Graziano|Aversa (CE)|Campania|Locale", "Edmondo Cirielli|Nocera Inferiore (SA)|Campania|Locale", "Tullio Ferrante|Napoli (NA)|Campania|Locale", "Piero De Luca|Salerno (SA)|Campania|Locale", "Francesco Mari|Salerno (SA)|Campania|Locale", "Michele Gubitosa|Avellino (AV)|Campania|Locale", "Antonio D'Alessio|Salerno (SA)|Campania|Locale",
+            "Marco Pellegrini|Foggia (FG)|Puglia|Locale", "Giandiego Gatta|Manfredonia (FG)|Puglia|Locale", "Mariangela Matera|Andria (BT)|Puglia|Locale", "Rita dalla Chiesa|Casoria (NA)|Puglia|Paracadutato", "Davide Bellomo|Bari (BA)|Puglia|Locale", "Rossano Sasso|Bari (BA)|Puglia|Locale", "Dario Iaia|Francavilla Fontana (BR)|Puglia|Locale", "Mauro D'Attis|Brindisi (BR)|Puglia|Locale", "Saverio Congedo|Lecce (LE)|Puglia|Locale", "Alessandro Colucci|Milano (MI)|Puglia|Paracadutato", "Giandonato La Salandra|Foggia (FG)|Puglia|Locale", "Giorgio Lovecchio|Foggia (FG)|Puglia|Locale", "Carla Giuliano|Foggia (FG)|Puglia|Locale", "Marcello Gemmato|Bari (BA)|Puglia|Locale", "Gianmauro Dell'Olio|Bari (BA)|Puglia|Locale", "Marco Lacarra|Bari (BA)|Puglia|Locale", "Luigi Giovanni Maiorano|Maruggio (TA)|Puglia|Locale", "Vito De Palma|Taranto (TA)|Puglia|Locale", "Patty L'Abbate|Bari (BA)|Puglia|Locale", "Ubaldo Pagano|Bari (BA)|Puglia|Locale", "Raffaele Fitto|Maglie (LE)|Puglia|Locale", "Andrea Caroppo|Lecce (LE)|Puglia|Locale", "Salvatore Marcello Di Mattina|Lecce (LE)|Puglia|Locale", "Leonardo Donno|Lecce (LE)|Puglia|Locale", "Claudio Stefanazzi|Lecce (LE)|Puglia|Locale", "Elisabetta Piccolotti|Camerino (MC)|Puglia|Paracadutato", "Mara Carfagna|Salerno (SA)|Puglia|Paracadutato",
+            "Salvatore Caiata|Potenza (PZ)|Basilicata|Locale", "Aldo Mattia|Frosinone (FR)|Basilicata|Paracadutato", "Arnaldo Lomuti|Potenza (PZ)|Basilicata|Locale", "Vincenzo Amendola|Napoli (NA)|Basilicata|Paracadutato",
+            "Domenico Furgiuele|Lamezia Terme (CZ)|Calabria|Locale", "Anna Laura Orrico|Cosenza (CS)|Calabria|Locale", "Wanda Ferro|Catanzaro (CZ)|Calabria|Locale", "Giovanni Arruzzolo|Rosarno (RC)|Calabria|Locale", "Francesco Cannizzaro|Vibo Valentia (VV)|Calabria|Locale", "Eugenia Maria Roccella|Bologna (BO)|Calabria|Paracadutato", "Alfredo Antoniozzi|Cosenza (CS)|Calabria|Locale", "Giuseppe Mangialavori|Lamezia Terme (CZ)|Calabria|Locale", "Simona Loizzo|Cosenza (CS)|Calabria|Locale", "Elisa Scutellà|Cosenza (CS)|Calabria|Locale", "Vittoria Baldino|Rossano (CS)|Calabria|Locale", "Riccardo Tucci|Vibo Valentia (VV)|Calabria|Locale", "Nico Stumpo|Crotone (KR)|Calabria|Locale",
+            "Davide Aiello|Palermo (PA)|Sicilia|Locale", "Carolina Varchi|Palermo (PA)|Sicilia|Locale", "Francesco Saverio Romano|Palermo (PA)|Sicilia|Locale", "Michela Vittoria Brambilla|Lecco (LC)|Sicilia|Paracadutato", "Calogero Pisano|Agrigento (AG)|Sicilia|Locale", "Marta Fascina|Melito di Porto Salvo (RC)|Sicilia|Paracadutato", "Tommaso Calderone|Barcellona P.G. (ME)|Sicilia|Locale", "Francesco Gallo|Messina (ME)|Sicilia|Locale", "Valeria Sudano|Catania (CT)|Sicilia|Locale", "Francesco Ciancitto|Catania (CT)|Sicilia|Locale", "Antonino Minardo|Ragusa (RG)|Sicilia|Locale", "Giovanni Luca Cannata|Siracusa (SR)|Sicilia|Locale", "Gianluca Caramanna|Milano (MI)|Sicilia|Paracadutato", "Giorgio Mulé|Caltanissetta (CL)|Sicilia|Locale", "Daniela Morfino|Palermo (PA)|Sicilia|Locale", "Valentina D'Orso|Palermo (PA)|Sicilia|Locale", "Giuseppe Provenzano|San Cataldo (CL)|Sicilia|Locale", "Antonio Giordano|Napoli (NA)|Sicilia|Paracadutato", "Ida Carmina|Agrigento (AG)|Sicilia|Locale", "Giovanna Iacono|Agrigento (AG)|Sicilia|Locale", "Davide Faraone|Palermo (PA)|Sicilia|Locale", "Maurizio Leo|Roma (RM)|Sicilia|Paracadutato", "Angela Raffa|Messina (ME)|Sicilia|Locale", "Maria Stefania Marino|Enna (EN)|Sicilia|Locale", "Manlio Messina|Catania (CT)|Sicilia|Locale", "Paolo Emilio Russo|Milano (MI)|Sicilia|Paracadutato", "Anastasio Carrà|Catania (CT)|Sicilia|Locale", "Luciano Cantone|Catania (CT)|Sicilia|Locale", "Giuseppe Castiglione|Catania (CT)|Sicilia|Locale", "Eliana Longi|Enna (EN)|Sicilia|Locale", "Filippo Scerra|Siracusa (SR)|Sicilia|Locale", "Anthony Barbagallo|Catania (CT)|Sicilia|Locale",
+            "Ugo Cappellacci|Cagliari (CA)|Sardegna|Locale", "Gianni Lampis|Cagliari (CA)|Sardegna|Locale", "Barbara Polo|Nuoro (NU)|Sardegna|Locale", "Dario Giagoni|Sassari (SS)|Sardegna|Locale", "Salvatore Deidda|Cagliari (CA)|Sardegna|Locale", "Francesco Mura|Nuoro (NU)|Sardegna|Locale", "Pietro Pittalis|Nuoro (NU)|Sardegna|Locale", "Silvio Lai|Sassari (SS)|Sardegna|Locale", "Francesca Ghirra|Cagliari (CA)|Sardegna|Locale", "Susanna Cherchi|Cagliari (CA)|Sardegna|Locale", "Emiliano Fenu|Oristano (NU)|Sardegna|Locale",
+            "Franco Manes|Aosta (AO)|Valle d'Aosta|Locale",
+            "Toni Ricciardi|Roma (RM)|Estero|Locale", "Simone Billi|Firenze (FI)|Estero|Locale", "Federica Onori|Roma (RM)|Estero|Locale", "Franco Tirelli|Rosario (Estero)|Estero|Locale", "Fabio Porta|Caltagirone (CL)|Estero|Locale", "Christian Diego Di Sanzo|Prato (PO)|Estero|Locale", "Andrea Di Giuseppe|Roma (RM)|Estero|Locale", "Nicola Carè|Catanzaro (CZ)|Estero|Locale"
         ];
 
-        // Definizione obiettivi totali dei seggi Italiani per la XIX legislatura (Totale 385 seggi su 400 totali)
-        // (Gli altri 15 appartengono alle circoscrizioni "Estero" che la mappa non mostra)
-        const targetCounts = {
-            "Lombardia": { total: 64, parachute: 12 },
-            "Campania": { total: 38, parachute: 12 },
-            "Lazio": { total: 36, parachute: 9 },
-            "Veneto": { total: 32, parachute: 4 },
-            "Piemonte": { total: 29, parachute: 5 },
-            "Emilia-Romagna": { total: 29, parachute: 6 },
-            "Puglia": { total: 27, parachute: 8 },
-            "Sicilia": { total: 25, parachute: 6 },
-            "Toscana": { total: 24, parachute: 5 },
-            "Calabria": { total: 13, parachute: 5 },
-            "Sardegna": { total: 11, parachute: 2 },
-            "Marche": { total: 10, parachute: 2 },
-            "Liguria": { total: 10, parachute: 2 },
-            "Abruzzo": { total: 9, parachute: 1 },
-            "Friuli-Venezia Giulia": { total: 8, parachute: 1 },
-            "Trentino-Alto Adige": { total: 7, parachute: 1 },
-            "Umbria": { total: 6, parachute: 1 },
-            "Basilicata": { total: 4, parachute: 2 },
-            "Molise": { total: 2, parachute: 1 },
-            "Valle d'Aosta": { total: 1, parachute: 0 }
-        };
-
+        // Decodifica la stringa nei veri dati e rimuove gli eventuali doppioni
         const allPoliticians = [];
-        const currentCounts = {};
-        for(let r in targetCounts) {
-            currentCounts[r] = { total: 0, parachute: 0 };
-        }
-
-        // 1. Deduplicazione e inserimento dei deputati grezzi noti
         const seenNames = new Set();
+        
         rawDeputiesData.forEach(pStr => {
             let parts = pStr.split("|");
             let name = parts[0];
             if(!seenNames.has(name)) {
                 seenNames.add(name);
-                let region = parts[2];
-                let status = parts[3];
-                if(currentCounts[region]) {
-                    allPoliticians.push({ name: name, birth: parts[1], elected: region, status: status });
-                    currentCounts[region].total++;
-                    if(status === "Paracadutato") currentCounts[region].parachute++;
-                }
+                allPoliticians.push({
+                    name: name,
+                    birth: parts[1],
+                    elected: parts[2],
+                    status: parts[3]
+                });
             }
         });
 
-        // 2. Colmare i vuoti restanti affinché la mappa sia statisticamente perfetta (385 deputati totali)
-        let anonCount = 1;
-        for(let r in targetCounts) {
-            let missingTotal = targetCounts[r].total - currentCounts[r].total;
-            let missingParachute = targetCounts[r].parachute - currentCounts[r].parachute;
-            
-            // Prevenire calcoli negativi nel caso in cui i dati raw superino la quota assegnata
-            missingTotal = Math.max(0, missingTotal);
-            missingParachute = Math.max(0, missingParachute);
-
-            for(let i=0; i < missingTotal; i++) {
-                let isParachute = i < missingParachute;
-                allPoliticians.push({
-                    name: `Deputato (Non campionato) #${anonCount++}`,
-                    birth: isParachute ? `Altra Provincia` : `${r} (Provincia Locale)`,
-                    elected: r,
-                    status: isParachute ? "Paracadutato" : "Locale"
-                });
-            }
-        }
-
-        // --- MAPPA DINAMICA D3.JS ---
-        // Coordinate ottimizzate: Toscana ed Emilia-Romagna allontanate visivamente
+        // Coordinate geografiche D3
         const regionCoords = {
             "Lombardia": [9.19, 45.46], "Campania": [14.26, 40.85], "Lazio": [12.49, 41.90],
             "Veneto": [11.87, 45.40], "Piemonte": [7.68, 45.07], "Emilia-Romagna": [11.40, 44.60],
@@ -785,12 +661,21 @@
             "Molise": [14.66, 41.56], "Valle d'Aosta": [7.32, 45.73]
         };
 
+        // LA MAPPA SI AUTOGESTISCE DAI DATI: conta le proporzioni lette dall'array reale
         const constituenciesData = Object.keys(regionCoords).map(regName => {
+            let total = 0;
+            let parachute = 0;
+            allPoliticians.forEach(p => {
+                if (p.elected === regName) {
+                    total++;
+                    if (p.status === "Paracadutato") parachute++;
+                }
+            });
             return {
                 name: regName,
                 coords: regionCoords[regName],
-                total: targetCounts[regName].total,
-                parachute: targetCounts[regName].parachute
+                total: total,
+                parachute: parachute
             };
         });
 
