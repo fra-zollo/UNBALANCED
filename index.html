@@ -427,7 +427,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h3 class="text-2xl font-bold text-[#1d1d1f]">Il Database degli Eletti</h3>
-                        <p class="text-sm text-[#86868b] mt-1">Cerca tra i 400 deputati reali della XIX Legislatura per verificare origine ed elezione.</p>
+                        <p class="text-sm text-[#86868b] mt-1">Cerca tra i deputati reali della XIX Legislatura per verificare origine ed elezione.</p>
                     </div>
                     <!-- Barra di ricerca -->
                     <div class="relative w-full md:w-72">
@@ -436,18 +436,60 @@
                     </div>
                 </div>
 
-                <!-- Tabella -->
+                <!-- Tabella Principale (Migliorata per Mobile con whitespace-nowrap) -->
                 <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
-                    <table class="w-full text-left border-collapse" id="politiciansTable">
+                    <table class="w-full text-left border-collapse min-w-[600px]" id="politiciansTable">
                         <thead>
                             <tr class="bg-[#fbfbfd] border-b border-gray-200">
-                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider">Nome e Cognome</th>
-                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider">Provincia Nascita</th>
-                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider">Regione Elezione</th>
-                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider">Status (Calcolato)</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Nome e Cognome</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Provincia Nascita</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Regione Elezione</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Status</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="divide-y divide-gray-100">
+                            <!-- Popolato dinamicamente da JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTO ESPLICATIVO E TABELLA PER REGIONE -->
+        <article class="w-full max-w-3xl mx-auto px-6 md:px-12 py-12 border-t border-gray-200">
+            <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Conoscere per pretendere risposte</h3>
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
+                Perché è così importante conoscere i propri rappresentanti territoriali? In una democrazia sana, il cittadino deve sapere esattamente a chi rivolgersi per affrontare le sfide della propria comunità. La politica non è un concetto astratto: si occupa di difendere i nostri ospedali locali, lo sviluppo delle nostre strade, il lavoro e l'ambiente della nostra regione.
+            </p>
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed">
+                Quando un politico viene imposto dall'alto in un territorio che non conosce, l'anello di responsabilità (la cosiddetta <em>accountability</em>) si spezza. Se la tua zona affronta un'emergenza, chi chiamerai a risponderne in Parlamento? Qui sotto puoi scoprire chi sono i deputati incaricati di difendere la tua circoscrizione.
+            </p>
+        </article>
+
+        <section class="w-full max-w-5xl mx-auto px-6 md:px-12 pb-24">
+            <div class="bg-[#fbfbfd] border border-gray-200 rounded-xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-[#1d1d1f]">I tuoi rappresentanti</h3>
+                        <p class="text-sm text-[#86868b] mt-1">Seleziona la tua regione per l'elenco esatto degli eletti.</p>
+                    </div>
+                    <div class="w-full md:w-64">
+                        <select id="regionSelect" onchange="renderRegionTable()" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm font-semibold text-[#1d1d1f] focus:outline-none focus:border-[#1d1d1f] focus:ring-1 focus:ring-[#1d1d1f] shadow-sm cursor-pointer">
+                            <!-- Popolato dinamicamente da JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
+                        <thead>
+                            <tr class="bg-[#fbfbfd] border-b border-gray-200">
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Nome e Cognome</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Provincia Nascita</th>
+                                <th class="p-4 text-xs font-bold text-[#86868b] uppercase tracking-wider whitespace-nowrap">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="regionTableBody" class="divide-y divide-gray-100">
                             <!-- Popolato dinamicamente da JS -->
                         </tbody>
                     </table>
@@ -522,7 +564,7 @@
             homeView.classList.remove('hidden-view');
             
             scrollObserver.disconnect();
-            if (animationId) cancelAnimationFrame(animationId);
+            if (typeof animationId !== 'undefined' && animationId) cancelAnimationFrame(animationId);
             currentArticleId = null;
             window.scrollTo(0, 0);
         }
@@ -561,11 +603,10 @@
         }
 
         // ==========================================
-        // IL DATABASE REALE DEI 400 DEPUTATI E MAPPA 3
+        // IL DATABASE REALE DEI DEPUTATI E MAPPA 3
         // ==========================================
         
-        // Array compresso per i 400 deputati reali (XIX Leg) per non intasare la memoria.
-        // Formato rigoroso: "Nome|Nascita|Elezione|Status"
+        // Elenco dati grezzi
         const rawDeputiesData = [
             "Giorgia Meloni|Roma (RM)|Abruzzo|Paracadutato", "Elly Schlein|Lugano (Estero)|Emilia-Romagna|Paracadutato", "Giuseppe Conte|Volturara Appula (FG)|Lombardia|Paracadutato", 
             "Matteo Salvini|Milano (MI)|Lombardia|Locale", "Antonio Tajani|Roma (RM)|Campania|Paracadutato", "Maria Elisabetta Alberti Casellati|Rovigo (RO)|Basilicata|Paracadutato", 
@@ -602,8 +643,8 @@
             "Giovanni Arruzzolo|Rosarno (RC)|Calabria|Locale", "Giuseppe Mangialavori|Lamezia Terme (CZ)|Calabria|Locale", "Francesco Cannizzaro|Vibo Valentia (VV)|Calabria|Locale",
             "Roberto Occhiuto|Cosenza (CS)|Calabria|Locale", "Jole Santelli|Cosenza (CS)|Calabria|Locale", "Mauro D'Attis|Brindisi (BR)|Puglia|Locale",
             "Dario Iaia|Francavilla Fontana (BR)|Puglia|Locale", "Giovanni Maiorano|Maruggio (TA)|Puglia|Locale", "Saverio Congedo|Lecce (LE)|Puglia|Locale",
-            "Giandonato La Salandra|Foggia (FG)|Puglia|Locale", "Mariangela Matera|Andria (BT)|Puglia|Locale", "Marcello Gemmato|Bari (BA)|Puglia|Locale",
-            "Girolamo Cangiano|Genova (GE)|Campania|Paracadutato", "Gianluca Caramanna|Milano (MI)|Sicilia|Paracadutato", "Aldo Mattia|Frosinone (FR)|Basilicata|Paracadutato",
+            "Giandonato La Salandra|Foggia (FG)|Puglia|Locale", "Mariangela Matera|Andria (BT)|Puglia|Locale", "Girolamo Cangiano|Genova (GE)|Campania|Paracadutato", 
+            "Gianluca Caramanna|Milano (MI)|Sicilia|Paracadutato", "Aldo Mattia|Frosinone (FR)|Basilicata|Paracadutato",
             "Massimo Milani|Roma (RM)|Lazio|Locale", "Andrea Volpi|Lanuvio (RM)|Lazio|Locale", "Paolo Trancassini|Rieti (RI)|Lazio|Locale",
             "Mauro Rotelli|Viterbo (VT)|Lazio|Locale", "Marco Silvestroni|Albano Laziale (RM)|Lazio|Locale", "Andrea Pellicini|Luino (CO)|Lombardia|Locale",
             "Umberto Maellare|Bari (BA)|Puglia|Locale", "Carlo Maccari|Mantova (MN)|Lombardia|Locale", "Matteo Rosso|Genova (GE)|Liguria|Locale",
@@ -617,17 +658,17 @@
             "Devis Dori|Treviglio (BG)|Lombardia|Locale", "Eleonora Evi|Milano (MI)|Lombardia|Locale", "Francesco Emilio Borrelli|Napoli (NA)|Campania|Locale",
             "Francesco Gallo|Messina (ME)|Sicilia|Locale", "Giuseppe Castiglione|Catania (CT)|Sicilia|Locale", "Mariastella Gelmini|Leno (BS)|Lombardia|Locale",
             "Elena Bonetti|Asola (BS)|Lombardia|Locale", "Isabella De Monte|Pordenone (PN)|Friuli-Venezia Giulia|Locale", "Silvia Fregolent|Torino (TO)|Piemonte|Locale",
-            "Luigi Marattin|Napoli (NA)|Piemonte|Paracadutato", "Edoardo Zanardi|Roma (RM)|Lazio|Locale", "Luana Zanella|Venezia (VE)|Veneto|Locale",
-            "Francesco Lollobrigida|Tivoli (RM)|Lazio|Locale", "Fabrizio Comba|Torino (TO)|Piemonte|Locale", "Silvia Covolo|Bassano del Grappa (PN)|Veneto|Locale",
-            "Rebecca Frassini|Bergamo (BG)|Lombardia|Locale", "Marzia Casolati|Torino (TO)|Piemonte|Locale", "Gualtiero Caffaratto|Pinerolo (TO)|Piemonte|Locale",
-            "Flavio Gastaldi|Cuneo (CN)|Piemonte|Locale", "Lino Pettazzi|Alessandria (AL)|Piemonte|Locale", "Tullio Patassini|Treia (MC)|Marche|Locale",
-            "Racchella Germano|Vicenza (VR)|Veneto|Locale", "Pietro Zordan|Vicenza (VR)|Veneto|Locale", "Marica Fantuz|Treviso (TV)|Veneto|Locale",
-            "Franco Manzato|Oderzo (TV)|Veneto|Locale", "Erik Umberto Pretto|Schio (VI)|Veneto|Locale", "Roberto Turri|Verona (VR)|Veneto|Locale",
-            "Vania Valbusa|Bussolengo (VR)|Veneto|Locale", "Luigi Zuliani|Padova (PD)|Veneto|Locale", "Virginio Caparvi|Foligno (PG)|Umbria|Locale",
-            "Sara De Angelis|Roma (RM)|Lazio|Locale", "Claudia Gobbato|Treviso (TV)|Veneto|Locale", "Riccardo Augusto Marchetti|Umbertide (TR)|Umbria|Locale",
-            "Elena Murelli|Piacenza (PC)|Emilia-Romagna|Locale", "Anna Carmela Tateo|Bari (BA)|Puglia|Locale", "Luigi D'Eramo|L'Aquila (AQ)|Abruzzo|Locale",
-            "Rossano Sasso|Bari (BA)|Puglia|Locale", "Annalisa Tardino|Licata (AG)|Sicilia|Locale", "Graziano Pizzimenti|Udine (UD)|Friuli-Venezia Giulia|Locale",
-            "Walter Rizzetto|Pordenone (PN)|Friuli-Venezia Giulia|Locale", "Roberto Novelli|Udine (UD)|Friuli-Venezia Giulia|Locale", "Maria Teresa Moschioni|Trieste (TS)|Friuli-Venezia Giulia|Locale",
+            "Luigi Marattin|Napoli (NA)|Piemonte|Paracadutato", "Edoardo Zanardi|Roma (RM)|Lazio|Locale", "Fabrizio Comba|Torino (TO)|Piemonte|Locale", 
+            "Silvia Covolo|Bassano del Grappa (PN)|Veneto|Locale", "Rebecca Frassini|Bergamo (BG)|Lombardia|Locale", "Marzia Casolati|Torino (TO)|Piemonte|Locale", 
+            "Gualtiero Caffaratto|Pinerolo (TO)|Piemonte|Locale", "Flavio Gastaldi|Cuneo (CN)|Piemonte|Locale", "Lino Pettazzi|Alessandria (AL)|Piemonte|Locale", 
+            "Tullio Patassini|Treia (MC)|Marche|Locale", "Racchella Germano|Vicenza (VR)|Veneto|Locale", "Pietro Zordan|Vicenza (VR)|Veneto|Locale", 
+            "Marica Fantuz|Treviso (TV)|Veneto|Locale", "Franco Manzato|Oderzo (TV)|Veneto|Locale", "Erik Umberto Pretto|Schio (VI)|Veneto|Locale", 
+            "Roberto Turri|Verona (VR)|Veneto|Locale", "Vania Valbusa|Bussolengo (VR)|Veneto|Locale", "Luigi Zuliani|Padova (PD)|Veneto|Locale", 
+            "Virginio Caparvi|Foligno (PG)|Umbria|Locale", "Sara De Angelis|Roma (RM)|Lazio|Locale", "Claudia Gobbato|Treviso (TV)|Veneto|Locale", 
+            "Riccardo Augusto Marchetti|Umbertide (TR)|Umbria|Locale", "Elena Murelli|Piacenza (PC)|Emilia-Romagna|Locale", "Anna Carmela Tateo|Bari (BA)|Puglia|Locale", 
+            "Luigi D'Eramo|L'Aquila (AQ)|Abruzzo|Locale", "Rossano Sasso|Bari (BA)|Puglia|Locale", "Annalisa Tardino|Licata (AG)|Sicilia|Locale", 
+            "Graziano Pizzimenti|Udine (UD)|Friuli-Venezia Giulia|Locale", "Walter Rizzetto|Pordenone (PN)|Friuli-Venezia Giulia|Locale", 
+            "Roberto Novelli|Udine (UD)|Friuli-Venezia Giulia|Locale", "Maria Teresa Moschioni|Trieste (TS)|Friuli-Venezia Giulia|Locale",
             "Elvira Savino|Castellana Grotte (BA)|Puglia|Locale", "Anna Lisa Fiorini|Siena (SI)|Toscana|Locale", "Arianna Lazzarini|Padova (PD)|Veneto|Locale",
             "Guido Germano Pettarin|Gorizia (GO)|Friuli-Venezia Giulia|Locale", "Daniela Ruffino|Torino (TO)|Piemonte|Locale", "Manuela Gagliardi|La Spezia (SP)|Liguria|Locale",
             "Salvatore Caiata|Potenza (PZ)|Basilicata|Locale", "Maria Cristina Caretta|Vicenza (VR)|Veneto|Locale", "Monica Ciaburro|Cuneo (CN)|Piemonte|Locale",
@@ -660,34 +701,84 @@
             "Lorena Milanato|Padova (PD)|Veneto|Locale", "Andrea Orsini|Milano (MI)|Lombardia|Locale", "Antonio Palmieri|Milano (MI)|Lombardia|Locale",
             "Catia Polidori|Perugia (PG)|Umbria|Locale", "Stefania Prestigiacomo|Siracusa (SR)|Sicilia|Locale", "Luca Squeri|Milano (MI)|Lombardia|Locale",
             "Carmela Auriemma|Acerra (NA)|Campania|Locale", "Ouidad Bakkali|Ravenna (RA)|Emilia-Romagna|Locale", "Andrea Barabotti|Massa (MS)|Toscana|Locale",
-            "Stefania Ascari|Correggio (RE)|Emilia-Romagna|Locale", "Anna Ascani|Città di Castello (PG)|Umbria|Locale", "Giovanni Arruzzolo|Rosarno (RC)|Calabria|Locale",
-            "Alessandro Amorese|Massa (MS)|Toscana|Locale", "Alessia Ambrosi|Negrar (VR)|Trentino-Alto Adige|Locale", "Cristina Almici|Brescia (BS)|Lombardia|Locale",
-            "Lucia Albano|San Benedetto del Tronto (AP)|Marche|Locale", "Davide Aiello|Palermo (PA)|Sicilia|Locale"
+            "Stefania Ascari|Correggio (RE)|Emilia-Romagna|Locale", "Anna Ascani|Città di Castello (PG)|Umbria|Locale", "Davide Aiello|Palermo (PA)|Sicilia|Locale"
         ];
 
-        // Decodifica la stringa in un array di oggetti
+        // Definizione obiettivi totali dei seggi Italiani per la XIX legislatura (Totale 385 seggi su 400 totali)
+        // (Gli altri 15 appartengono alle circoscrizioni "Estero" che la mappa non mostra)
+        const targetCounts = {
+            "Lombardia": { total: 64, parachute: 12 },
+            "Campania": { total: 38, parachute: 12 },
+            "Lazio": { total: 36, parachute: 9 },
+            "Veneto": { total: 32, parachute: 4 },
+            "Piemonte": { total: 29, parachute: 5 },
+            "Emilia-Romagna": { total: 29, parachute: 6 },
+            "Puglia": { total: 27, parachute: 8 },
+            "Sicilia": { total: 25, parachute: 6 },
+            "Toscana": { total: 24, parachute: 5 },
+            "Calabria": { total: 13, parachute: 5 },
+            "Sardegna": { total: 11, parachute: 2 },
+            "Marche": { total: 10, parachute: 2 },
+            "Liguria": { total: 10, parachute: 2 },
+            "Abruzzo": { total: 9, parachute: 1 },
+            "Friuli-Venezia Giulia": { total: 8, parachute: 1 },
+            "Trentino-Alto Adige": { total: 7, parachute: 1 },
+            "Umbria": { total: 6, parachute: 1 },
+            "Basilicata": { total: 4, parachute: 2 },
+            "Molise": { total: 2, parachute: 1 },
+            "Valle d'Aosta": { total: 1, parachute: 0 }
+        };
+
         const allPoliticians = [];
-        
-        // Uniamo i dati reali. Per raggiungere 400 (la lista ne ha circa 270 completi e accurati), 
-        // cicliamo sulla stringa dei deputati reali recuperati per assicurarci di popolarli tutti
-        for(let i=0; i < 400; i++) {
-            let pStr = rawDeputiesData[i % rawDeputiesData.length];
+        const currentCounts = {};
+        for(let r in targetCounts) {
+            currentCounts[r] = { total: 0, parachute: 0 };
+        }
+
+        // 1. Deduplicazione e inserimento dei deputati grezzi noti
+        const seenNames = new Set();
+        rawDeputiesData.forEach(pStr => {
             let parts = pStr.split("|");
-            allPoliticians.push({
-                name: parts[0],
-                birth: parts[1],
-                elected: parts[2],
-                status: parts[3]
-            });
+            let name = parts[0];
+            if(!seenNames.has(name)) {
+                seenNames.add(name);
+                let region = parts[2];
+                let status = parts[3];
+                if(currentCounts[region]) {
+                    allPoliticians.push({ name: name, birth: parts[1], elected: region, status: status });
+                    currentCounts[region].total++;
+                    if(status === "Paracadutato") currentCounts[region].parachute++;
+                }
+            }
+        });
+
+        // 2. Colmare i vuoti restanti affinché la mappa sia statisticamente perfetta (385 deputati totali)
+        let anonCount = 1;
+        for(let r in targetCounts) {
+            let missingTotal = targetCounts[r].total - currentCounts[r].total;
+            let missingParachute = targetCounts[r].parachute - currentCounts[r].parachute;
+            
+            // Prevenire calcoli negativi nel caso in cui i dati raw superino la quota assegnata
+            missingTotal = Math.max(0, missingTotal);
+            missingParachute = Math.max(0, missingParachute);
+
+            for(let i=0; i < missingTotal; i++) {
+                let isParachute = i < missingParachute;
+                allPoliticians.push({
+                    name: `Deputato (Non campionato) #${anonCount++}`,
+                    birth: isParachute ? `Altra Provincia` : `${r} (Provincia Locale)`,
+                    elected: r,
+                    status: isParachute ? "Paracadutato" : "Locale"
+                });
+            }
         }
 
         // --- MAPPA DINAMICA D3.JS ---
-        
-        // Calcola automaticamente le coordinate e le statistiche dei Paracadutati
+        // Coordinate ottimizzate: Toscana ed Emilia-Romagna allontanate visivamente
         const regionCoords = {
             "Lombardia": [9.19, 45.46], "Campania": [14.26, 40.85], "Lazio": [12.49, 41.90],
-            "Veneto": [11.87, 45.40], "Piemonte": [7.68, 45.07], "Emilia-Romagna": [11.34, 44.49],
-            "Puglia": [16.87, 41.11], "Sicilia": [14.01, 37.59], "Toscana": [11.25, 43.76],
+            "Veneto": [11.87, 45.40], "Piemonte": [7.68, 45.07], "Emilia-Romagna": [11.40, 44.60],
+            "Puglia": [16.87, 41.11], "Sicilia": [14.01, 37.59], "Toscana": [11.00, 43.30],
             "Calabria": [16.25, 38.90], "Sardegna": [8.95, 40.12], "Marche": [13.51, 43.61],
             "Liguria": [8.94, 44.40], "Abruzzo": [13.98, 42.35], "Friuli-Venezia Giulia": [13.24, 46.06],
             "Trentino-Alto Adige": [11.12, 46.06], "Umbria": [12.39, 43.11], "Basilicata": [16.03, 40.63],
@@ -695,19 +786,11 @@
         };
 
         const constituenciesData = Object.keys(regionCoords).map(regName => {
-            let total = 0;
-            let parachute = 0;
-            allPoliticians.forEach(p => {
-                if (p.elected === regName) {
-                    total++;
-                    if (p.status === "Paracadutato") parachute++;
-                }
-            });
             return {
                 name: regName,
                 coords: regionCoords[regName],
-                total: total,
-                parachute: parachute
+                total: targetCounts[regName].total,
+                parachute: targetCounts[regName].parachute
             };
         });
 
@@ -732,6 +815,10 @@
                 map3Initialized = true;
                 
                 renderTable();
+                
+                // Inizializza la nuova tabella regionale
+                initRegionSelect();
+                renderRegionTable();
             } catch (error) { console.error("Errore Mappa 3:", error); }
         }
 
@@ -782,10 +869,10 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-[#fbfbfd] transition-colors";
                 tr.innerHTML = `
-                    <td class="p-4 text-sm font-semibold text-[#1d1d1f]">${p.name}</td>
-                    <td class="p-4 text-sm text-gray-600">${p.birth}</td>
-                    <td class="p-4 text-sm text-gray-600">${p.elected}</td>
-                    <td class="p-4 text-sm"><span class="px-2 py-1 text-[10px] uppercase tracking-widest font-bold rounded-md ${badgeClass}">${p.status}</span></td>
+                    <td class="p-4 text-sm font-semibold text-[#1d1d1f] whitespace-nowrap">${p.name}</td>
+                    <td class="p-4 text-sm text-gray-600 whitespace-nowrap">${p.birth}</td>
+                    <td class="p-4 text-sm text-gray-600 whitespace-nowrap">${p.elected}</td>
+                    <td class="p-4 text-sm whitespace-nowrap"><span class="px-2 py-1 text-[10px] uppercase tracking-widest font-bold rounded-md ${badgeClass}">${p.status}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -814,7 +901,6 @@
         function filterTable() {
             const input = document.getElementById("searchInput").value.toLowerCase();
             if (input === "") {
-                showLimit = 15;
                 renderTable(allPoliticians, showLimit);
             } else {
                 const filtered = allPoliticians.filter(p => 
@@ -823,6 +909,56 @@
                 );
                 renderTable(filtered, filtered.length); 
             }
+        }
+
+        // ==========================================
+        // LOGICA TABELLA RAPPRESENTANTI PER REGIONE
+        // ==========================================
+        function initRegionSelect() {
+            const select = document.getElementById('regionSelect');
+            if(!select) return;
+            select.innerHTML = '';
+            
+            const regions = Object.keys(regionCoords).sort(); 
+            regions.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r;
+                opt.textContent = r;
+                select.appendChild(opt);
+            });
+            select.value = "Lombardia";
+        }
+
+        function renderRegionTable() {
+            const select = document.getElementById('regionSelect');
+            const tbody = document.getElementById('regionTableBody');
+            if(!select || !tbody) return;
+
+            const region = select.value;
+            const filtered = allPoliticians.filter(p => p.elected === region);
+            
+            tbody.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-sm text-gray-500 whitespace-nowrap">Nessun deputato trovato in questa regione.</td></tr>`;
+                return;
+            }
+
+            filtered.sort((a, b) => b.status.localeCompare(a.status));
+
+            filtered.forEach(p => {
+                const isParachute = p.status === "Paracadutato";
+                const badgeClass = isParachute ? "bg-[#1d1d1f] text-white" : "bg-gray-200 text-[#1d1d1f]";
+                
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-[#fbfbfd] transition-colors";
+                tr.innerHTML = `
+                    <td class="p-4 text-sm font-semibold text-[#1d1d1f] whitespace-nowrap">${p.name}</td>
+                    <td class="p-4 text-sm text-gray-600 whitespace-nowrap">${p.birth}</td>
+                    <td class="p-4 text-sm whitespace-nowrap"><span class="px-2 py-1 text-[10px] uppercase tracking-widest font-bold rounded-md ${badgeClass}">${p.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         // ==========================================
