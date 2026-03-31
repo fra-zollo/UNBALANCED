@@ -210,15 +210,17 @@
             <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Italia per pochi.</h1>
             <div class="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto md:mx-0 text-left">
                 <p>
-                    Comprendere come è distribuita la ricchezza è fondamentale per misurare la reale salute di una società. Non basta guardare al PIL o alla crescita economica generale: il vero indicatore di giustizia sociale è <strong>nelle tasche di chi finisce quella ricchezza</strong>.
+                    Comprendere come è distribuita la ricchezza è fondamentale per misurare la reale salute di una società. Non basta guardare al PIL o alla crescita economica generale: il vero indicatore di giustizia sociale è <strong>nelle tasche di chi finisce quella ricchezza</strong>. I dati Fabi (Federazione Autonoma Bancari Italiani) e Istat rivelano un quadro allarmante per il nostro Paese.
                 </p>
             </div>
         </header>
 
         <div class="scroll-reveal flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 my-12 md:my-16 px-6">
             <div class="text-center md:text-right flex flex-col items-center md:items-end order-2 md:order-1">
-                <p class="text-xl md:text-3xl font-bold text-[#1d1d1f] max-w-sm mb-4">Questa è tutta la ricchezza netta in Italia.</p>
+                <p class="text-xl md:text-3xl font-bold text-[#1d1d1f] max-w-sm mb-4">Questa è tutta la ricchezza netta in Italia (2021).</p>
                 <p class="text-3xl md:text-5xl font-black text-[#1d1d1f] mb-4">10.421 <span class="text-lg md:text-2xl text-[#86868b] font-bold block md:inline">Miliardi di €</span></p>
+                <svg class="w-12 h-12 mt-2 text-[#86868b] hidden md:block animate-bounce-h" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                <svg class="w-12 h-12 mt-4 text-[#86868b] md:hidden animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
             </div>
             <div class="order-1 md:order-2">
                 <div class="w-48 h-48 md:w-64 md:h-64 rounded-full bg-[#1d1d1f] shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex items-center justify-center text-white font-bold tracking-widest text-2xl md:text-3xl">100%</div>
@@ -227,23 +229,35 @@
 
         <div class="scroll-reveal max-w-4xl mx-auto px-6 md:px-12 text-center md:text-left mb-12 md:mb-24">
             <div class="text-lg md:text-xl text-gray-700 leading-relaxed text-left">
-                <p>Negli ultimi decenni, la disuguaglianza è esplosa. A livello globale le statistiche sono allarmanti: <strong>l'1% più ricco dell'umanità possiede quasi il 50% della ricchezza totale</strong>, mentre la metà più povera della popolazione mondiale si deve accontentare di appena il 2%. L'Italia non fa eccezione a questo pericoloso trend di concentrazione estrema.</p>
+                <p>Mentre la ricchezza totale delle famiglie italiane sfiora cifre record (arrivando a 10.421 miliardi di euro a fine 2021 secondo Istat/Bankitalia), il potere d'acquisto medio sta crollando. Oggi, la ricchezza mediana di un adulto italiano ammonta a <strong>112.100 dollari</strong>, un dato che ci pone alle spalle non solo della Francia (121.800 dollari), ma che evidenzia un preoccupante scivolamento verso il basso rispetto al resto d'Europa.</p>
             </div>
         </div>
 
-        <div class="scroll-reveal max-w-3xl mx-auto px-6 text-center mb-4 md:mb-8">
-            <div class="bg-gray-100 border border-gray-200 p-8 md:p-12 rounded-3xl shadow-sm">
-                <p class="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium">
-                    Questa immensa fortuna è composta da immobili, risparmi privati, investimenti finanziari e aziende. <br><br>
-                    Ma la cosa più interessante non è capire quanto valga nel complesso, bensì... <strong>come è divisa questa torta?</strong>
-                </p>
+        <!-- NUOVA SEZIONE: Composizione della ricchezza finanziaria -->
+        <section class="w-full max-w-5xl mx-auto px-6 md:px-12 pb-16">
+            <div class="w-full bg-[#fbfbfd] p-6 md:p-10 rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center gap-12">
+                <div class="w-full md:w-1/2 text-left">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4 text-[#1d1d1f]">Dove sono i nostri soldi?</h3>
+                    <p class="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
+                        Escludendo gli immobili, la sola <strong>ricchezza finanziaria</strong> delle famiglie italiane (conti correnti, azioni, assicurazioni) ammontava nel 2022 a circa <strong>5.256 miliardi di euro</strong> (dati Fabi).
+                    </p>
+                    <p class="text-sm md:text-base text-gray-700 leading-relaxed">
+                        Il grafico illustra la composizione di questa liquidità. Nonostante i tentativi di diversificazione, una grandissima fetta (31,4%) giace ancora in depositi o contanti, esposta pesantemente all'erosione dell'inflazione, mentre le azioni pesano quasi per un quarto del totale (23,7%).
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="text-xs font-bold text-[#86868b] uppercase tracking-widest mb-6 text-center">Composizione della ricchezza finanziaria (5.256 mld €)</h4>
+                    <div class="relative h-[250px] w-full">
+                        <canvas id="assetChart"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
         <div class="scroll-reveal dots-container flex flex-col md:flex-row items-center justify-center gap-12 max-w-5xl mx-auto mt-8 mb-8 md:mt-12 md:mb-12 px-6">
             <div class="md:w-1/2 text-center md:text-left">
                 <h3 class="text-3xl md:text-4xl font-bold mb-6 text-[#1d1d1f] tracking-tight">Mettiamo che ognuno di questi pallini sia una persona...</h3>
-                <p class="text-lg md:text-xl text-[#86868b] leading-relaxed">Immagina che la popolazione italiana sia formata da sole 100 persone (ognuna rappresenta l'1% demografico). <br><br>Quanta di quella ricchezza finisce nelle mani di ciascuno di loro?</p>
+                <p class="text-lg md:text-xl text-[#86868b] leading-relaxed">Immagina che la popolazione italiana sia formata da sole 100 persone (ognuna rappresenta l'1% demografico). <br><br>Quanta di quella immensa ricchezza totale (inclusi gli immobili) finisce nelle mani di ciascuno di loro?</p>
             </div>
             <div class="md:w-1/2 flex justify-center">
                 <div class="grid grid-cols-10 gap-2 md:gap-3 dots-grid bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100"></div>
@@ -259,16 +273,16 @@
 
             <div class="ui-layer w-full flex justify-between px-2 md:px-12 pb-4 max-w-7xl mx-auto gap-2 md:gap-4 shrink-0">
                 <div class="w-1/3 text-center px-1">
-                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 50 più poveri</h3>
-                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà della popolazione, ma si spartiscono le briciole: solo il <strong>7,4%</strong> della ricchezza totale.</p>
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">Il 50% più povero</h3>
+                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Rappresentano metà del Paese, ma si spartiscono le briciole: solo poco più del <strong>7%</strong> della ricchezza totale.</p>
                 </div>
                 <div class="w-1/3 text-center border-l border-r border-gray-200 px-2 md:px-4">
-                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 40 del ceto medio</h3>
-                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">La classe media detiene il <strong>32,6%</strong>. Lavorano per mantenere l'equilibrio del Paese.</p>
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">Il Ceto Medio (45%)</h3>
+                    <p class="text-[10px] md:text-base text-[#86868b] mt-2 leading-tight md:leading-relaxed">Detiene circa il <strong>46%</strong> della ricchezza nazionale, sobbarcandosi gran parte del carico fiscale ed economico.</p>
                 </div>
                 <div class="w-1/3 text-center px-1">
-                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">I 10 più ricchi</h3>
-                    <p class="text-[10px] md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Controllano il <strong>60%</strong>. Da soli, possiedono quasi il doppio della ricchezza degli altri 90 messi insieme.</p>
+                    <h3 class="font-bold text-sm md:text-xl text-[#1d1d1f]">Il Top 5% più ricco</h3>
+                    <p class="text-[10px] md:text-base text-[#1d1d1f] mt-2 leading-tight md:leading-relaxed font-medium">Da soli, appena il 5% della popolazione, possiedono il <strong>46%</strong> della ricchezza totale del Paese (dati 2021).</p>
                 </div>
             </div>
         </div>
@@ -276,11 +290,14 @@
         <article class="scroll-reveal w-full max-w-3xl mx-auto px-6 md:px-12 pb-24">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">La fotografia di un Paese diviso</h3>
             <div class="w-full bg-white border border-gray-200 p-5 md:p-8 rounded-2xl shadow-sm mb-12 overflow-hidden mt-8">
-                <h4 class="text-xs md:text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%)</h4>
+                <h4 class="text-xs md:text-sm font-bold text-[#86868b] uppercase tracking-widest mb-6">Distribuzione della ricchezza netta (%) in Italia</h4>
                 <div class="relative h-[250px] md:h-[300px] w-full">
                     <canvas id="staticWealthChart"></canvas>
                 </div>
             </div>
+            <p class="text-[10px] md:text-xs text-gray-500 font-semibold uppercase tracking-widest text-center mb-12">
+                Fonti Dati: Istat / Bankitalia / FABI (Federazione Autonoma Bancari Italiani)
+            </p>
         </article>
     </div>
 
@@ -427,7 +444,6 @@
             </div>
         </div>
 
-        <!-- ...resto dell'articolo 3... -->
         <article class="w-full max-w-3xl mx-auto px-6 md:px-12 py-8 md:py-16">
             <h3 class="text-2xl md:text-3xl font-bold mb-6 text-[#1d1d1f]">Lo scollamento democratico</h3>
             <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
@@ -534,7 +550,11 @@
                     scrollObserver.observe(el);
                 });
 
-                if(id === 1) { initSimulation(); setTimeout(initStaticChart, 100); } 
+                if(id === 1) { 
+                    initSimulation(); 
+                    setTimeout(initAssetChart, 100); // Nuovo chart
+                    setTimeout(initStaticChart, 100); 
+                } 
                 else if(id === 2) { initMap(); setTimeout(initTipologiaChart, 100); } 
                 else if(id === 3) { initMap3(); }
                 window.scrollTo(0, 0);
@@ -585,7 +605,6 @@
 
                 italyGeoJSON.features.forEach(feature => {
                     let rawName = feature.properties.reg_name;
-                    // Normalizzazione Nomi Regioni se differiscono dal GeoJSON
                     let regName = rawName;
                     if(rawName.includes("Trentino")) regName = "Trentino-Alto Adige";
                     if(rawName.includes("Valle d'Aosta")) regName = "Valle d'Aosta";
@@ -599,7 +618,6 @@
                     
                     let dotsSpawned = 0;
                     let attempts = 0;
-                    // Generiamo i punti rigorosamente dentro i veri confini regionali
                     while(dotsSpawned < dots && attempts < dots * 150) {
                         let lng = minLng + Math.random() * (maxLng - minLng);
                         let lat = minLat + Math.random() * (maxLat - minLat);
@@ -612,7 +630,6 @@
                     }
                 });
 
-                // Mischiamo l'array così l'animazione di entrata è bella e randomica in tutta Italia
                 for (let i = centers.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [centers[i], centers[j]] = [centers[j], centers[i]];
@@ -956,6 +973,7 @@
 
         let animationId = null;
         let staticChartInstance = null; 
+        let assetChartInstance = null; // Nuova istanza per il grafico asset
         const canvas1 = document.getElementById('vizCanvas');
         const ctx1 = canvas1.getContext('2d');
         let width1, height1;
@@ -972,16 +990,64 @@
             staticChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['I 50% più poveri', 'Il 40% del ceto medio', 'I 10% più ricchi'],
-                    datasets: [{ label: 'Quota di ricchezza totale (%)', data: [7.4, 32.6, 60.0], backgroundColor: ['#e5e5ea', '#86868b', '#1d1d1f'], borderWidth: 0, borderRadius: 6, barPercentage: 0.7 }]
+                    // Aggiornate le diciture basate sui nuovi dati Fabi/Istat (top 5% con il 46%)
+                    labels: ['Il 50% più povero', 'Il Ceto Medio (45%)', 'Il Top 5% più ricco'],
+                    datasets: [{ label: 'Quota di ricchezza totale (%)', data: [7.4, 46.6, 46.0], backgroundColor: ['#e5e5ea', '#86868b', '#1d1d1f'], borderWidth: 0, borderRadius: 6, barPercentage: 0.7 }]
                 },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { max: 100, grid: { color: '#f3f4f6' }, ticks: { callback: v => v + '%' } }, y: { grid: { display: false }, ticks: { font: { weight: 'bold' }, color: '#1d1d1f' } } } }
             });
         }
+        
+        // Nuova funzione per inizializzare il grafico della composizione della ricchezza finanziaria
+        function initAssetChart() {
+            const canvasEl = document.getElementById('assetChart');
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+            if (assetChartInstance) assetChartInstance.destroy();
+
+            assetChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Contanti / Depositi', 'Azioni', 'Assicurazioni', 'Titoli e Fondi'],
+                    datasets: [{
+                        data: [31.4, 23.7, 22.8, 22.1], // Dati percentuali ricavati dai tuoi screenshot
+                        backgroundColor: ['#1d1d1f', '#86868b', '#d1d1d6', '#f3f4f6'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: { family: '-apple-system', size: 11 },
+                                color: '#1d1d1f'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+        
         function updatePointerPosition(clientX, clientY) { const rect = canvas1.getBoundingClientRect(); mouse.x = clientX - rect.left; mouse.y = clientY - rect.top; }
         window.addEventListener('mousemove', (e) => updatePointerPosition(e.clientX, e.clientY));
         window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; });
-        const groups = [ { count: 50, wealthRatio: 0.148, color: '#e5e5ea', border: '#c7c7cc', alignX: 0.166 }, { count: 40, wealthRatio: 0.815, color: '#86868b', alignX: 0.500 }, { count: 10, wealthRatio: 6.000, color: '#1d1d1f', alignX: 0.833 } ];
+        // Aggiornato anche i pesi dell'animazione interattiva
+        const groups = [ { count: 50, wealthRatio: 0.148, color: '#e5e5ea', border: '#c7c7cc', alignX: 0.166 }, { count: 45, wealthRatio: 1.035, color: '#86868b', alignX: 0.500 }, { count: 5, wealthRatio: 9.200, color: '#1d1d1f', alignX: 0.833 } ];
         class Dot1 {
             constructor(group) {
                 this.group = group; this.radius = Math.sqrt(group.wealthRatio * scaleFactor);
